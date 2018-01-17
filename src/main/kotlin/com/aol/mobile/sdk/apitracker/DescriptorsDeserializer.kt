@@ -18,21 +18,15 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.20'
-    id 'java-gradle-plugin'
-}
+package com.aol.mobile.sdk.apitracker
 
-repositories {
-    jcenter()
-}
+import com.github.salomonbrys.kotson.fromJson
+import com.google.gson.Gson
 
-dependencies {
-    compileOnly gradleApi()
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.2.20'
-    testCompileOnly gradleTestKit()
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.assertj:assertj-core:3.9.0'
-
-    compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
+class DescriptorsDeserializer {
+    companion object {
+        public fun deserialize(json: String): List<TypeDescriptor> {
+            return Gson().fromJson(json)
+        }
+    }
 }
