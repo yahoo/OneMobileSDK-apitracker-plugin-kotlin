@@ -252,10 +252,10 @@ class DescriptorsDeserializerTest {
                 "    ]\n" +
                 "  }]"
 
-        val descriptorList: List<TypeDescriptor> = DescriptorsDeserializer.deserialize(json)
-        assertThat(descriptorList.size).isEqualTo(3)
-        assertThat(descriptorList.get(0).name).isEqualTo("com.aol.mobile.sdk.player.OneSDK")
-        val firstMethodDescriptor: MethodDescriptor = descriptorList.get(0).methods.iterator().next()
+        val typeDescriptors: List<TypeDescriptor> = deserializeTypeDescriptors(json)
+        assertThat(typeDescriptors.size).isEqualTo(3)
+        assertThat(typeDescriptors[0].name).isEqualTo("com.aol.mobile.sdk.player.OneSDK")
+        val firstMethodDescriptor: MethodDescriptor = typeDescriptors[0].methods.iterator().next()
         assertThat(firstMethodDescriptor.name).isEqualTo("constructor")
         assertThat(firstMethodDescriptor.params.size).isEqualTo(2)
     }

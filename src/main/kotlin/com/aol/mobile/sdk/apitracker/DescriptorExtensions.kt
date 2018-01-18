@@ -20,9 +20,39 @@
 
 package com.aol.mobile.sdk.apitracker
 
-import com.github.salomonbrys.kotson.fromJson
-import com.google.gson.Gson
+private fun TypeDescriptor.toUD(): UniversalDescriptor {
+    return UniversalDescriptor(
+            this.modifiers.toList(),
+            null,
+            this.name,
+            Kind.TYPE,
+            emptyList()
+    )
+}
 
-fun deserializeTypeDescriptors(json: String): List<TypeDescriptor> {
-    return Gson().fromJson(json)
+private fun VariableDescriptor.toUD(typeName: String): UniversalDescriptor {
+    return UniversalDescriptor(
+            this.modifiers.toList(),
+            this.type,
+            typeName + "." + this.name,
+            Kind.FIELD,
+            emptyList()
+    )
+}
+
+private fun MethodDescriptor.toUD(typeName: String): UniversalDescriptor {
+    return UniversalDescriptor(
+            this.modifiers.toList(),
+            this.returnType,
+            typeName + "." + this.name,
+            Kind.METHOD,
+            this.params.map { it.type }
+    )
+}
+
+fun TypeDescriptor.toUniversalDescriptors(): List<UniversalDescriptor> {
+    return emptyList<UniversalDescriptor>()
+            .plus(this.toUD())
+            .plus(this.fields.map { it.toUD(this.name) })
+            .plus(this.methods.map { it.toUD(this.name) })
 }
