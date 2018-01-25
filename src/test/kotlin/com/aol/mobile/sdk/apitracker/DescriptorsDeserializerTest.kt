@@ -25,237 +25,240 @@ import org.junit.Test
 
 class DescriptorsDeserializerTest {
     @Test
-    fun testDeserialization() {
-        val json = "[\n" +
-                "  {\n" +
-                "    \"modifiers\": [\n" +
-                "      \"public\",\n" +
-                "      \"final\"\n" +
-                "    ],\n" +
-                "    \"name\": \"com.aol.mobile.sdk.player.OneSDK\",\n" +
-                "    \"fields\": [],\n" +
-                "    \"methods\": [\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"constructor\",\n" +
-                "        \"returnType\": \"void\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"context\",\n" +
-                "            \"type\": \"android.content.Context\"\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"sdkConfig\",\n" +
-                "            \"type\": \"com.aol.mobile.sdk.player.http.model.SdkConfig\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"addPlugin\",\n" +
-                "        \"returnType\": \"void\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"plugin\",\n" +
-                "            \"type\": \"com.aol.mobile.sdk.player.Plugin\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"removePlugin\",\n" +
-                "        \"returnType\": \"void\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"plugin\",\n" +
-                "            \"type\": \"com.aol.mobile.sdk.player.Plugin\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"getVideoProvider\",\n" +
-                "        \"returnType\": \"com.aol.mobile.sdk.player.VideoProvider\",\n" +
-                "        \"params\": []\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"createBuilder\",\n" +
-                "        \"returnType\": \"com.aol.mobile.sdk.player.PlayerBuilder\",\n" +
-                "        \"params\": []\n" +
-                "      }\n" +
-                "    ]\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"modifiers\": [\n" +
-                "      \"public\",\n" +
-                "      \"final\"\n" +
-                "    ],\n" +
-                "    \"name\": \"com.aol.mobile.sdk.player.OneSDKBuilder\",\n" +
-                "    \"fields\": [],\n" +
-                "    \"methods\": [\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"constructor\",\n" +
-                "        \"returnType\": \"void\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"context\",\n" +
-                "            \"type\": \"android.content.Context\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"setEnvironment\",\n" +
-                "        \"returnType\": \"com.aol.mobile.sdk.player.OneSDKBuilder\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"environment\",\n" +
-                "            \"type\": \"com.aol.mobile.sdk.player.http.model.Environment\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"setExtra\",\n" +
-                "        \"returnType\": \"com.aol.mobile.sdk.player.OneSDKBuilder\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"extra\",\n" +
-                "            \"type\": \"org.json.JSONObject\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"setAdvertisingId\",\n" +
-                "        \"returnType\": \"com.aol.mobile.sdk.player.OneSDKBuilder\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"advertId\",\n" +
-                "            \"type\": \"java.lang.String\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"setLimitAdTracking\",\n" +
-                "        \"returnType\": \"com.aol.mobile.sdk.player.OneSDKBuilder\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"limitAdTracking\",\n" +
-                "            \"type\": \"boolean\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"setConfigUrl\",\n" +
-                "        \"returnType\": \"com.aol.mobile.sdk.player.OneSDKBuilder\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"newConfigUrl\",\n" +
-                "            \"type\": \"java.lang.String\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\"\n" +
-                "        ],\n" +
-                "        \"name\": \"create\",\n" +
-                "        \"returnType\": \"void\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [\n" +
-                "              \"final\"\n" +
-                "            ],\n" +
-                "            \"name\": \"callback\",\n" +
-                "            \"type\": \"com.aol.mobile.sdk.player.OneSDKBuilder.Callback\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      }\n" +
-                "    ]\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"modifiers\": [\n" +
-                "      \"public\",\n" +
-                "      \"abstract\",\n" +
-                "      \"static\"\n" +
-                "    ],\n" +
-                "    \"name\": \"com.aol.mobile.sdk.player.OneSDKBuilder.Callback\",\n" +
-                "    \"fields\": [],\n" +
-                "    \"methods\": [\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\",\n" +
-                "          \"abstract\"\n" +
-                "        ],\n" +
-                "        \"name\": \"onSuccess\",\n" +
-                "        \"returnType\": \"void\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"oneSDK\",\n" +
-                "            \"type\": \"com.aol.mobile.sdk.player.OneSDK\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"modifiers\": [\n" +
-                "          \"public\",\n" +
-                "          \"abstract\"\n" +
-                "        ],\n" +
-                "        \"name\": \"onFailure\",\n" +
-                "        \"returnType\": \"void\",\n" +
-                "        \"params\": [\n" +
-                "          {\n" +
-                "            \"modifiers\": [],\n" +
-                "            \"name\": \"error\",\n" +
-                "            \"type\": \"java.lang.Exception\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      }\n" +
-                "    ]\n" +
-                "  }]"
+    fun testTypeDescriptorsDeserializationFromJson() {
+        val json = """
+            [
+              {
+                "modifiers": [
+                  "public",
+                  "final"
+                ],
+                "name": "com.aol.mobile.sdk.player.OneSDK",
+                "fields": [],
+                "methods": [
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "constructor",
+                    "returnType": "void",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "context",
+                        "type": "android.content.Context"
+                      },
+                      {
+                        "modifiers": [],
+                        "name": "sdkConfig",
+                        "type": "com.aol.mobile.sdk.player.http.model.SdkConfig"
+                      }
+                    ]
+                  },
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "addPlugin",
+                    "returnType": "void",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "plugin",
+                        "type": "com.aol.mobile.sdk.player.Plugin"
+                      }
+                    ]
+                  },
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "removePlugin",
+                    "returnType": "void",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "plugin",
+                        "type": "com.aol.mobile.sdk.player.Plugin"
+                      }
+                    ]
+                  },
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "getVideoProvider",
+                    "returnType": "com.aol.mobile.sdk.player.VideoProvider",
+                    "params": []
+                  },
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "createBuilder",
+                    "returnType": "com.aol.mobile.sdk.player.PlayerBuilder",
+                    "params": []
+                  }
+                ]
+              },
+              {
+                "modifiers": [
+                  "public",
+                  "final"
+                ],
+                "name": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                "fields": [],
+                "methods": [
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "constructor",
+                    "returnType": "void",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "context",
+                        "type": "android.content.Context"
+                      }
+                    ]
+                  },
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "setEnvironment",
+                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "environment",
+                        "type": "com.aol.mobile.sdk.player.http.model.Environment"
+                      }
+                    ]
+                  },
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "setExtra",
+                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "extra",
+                        "type": "org.json.JSONObject"
+                      }
+                    ]
+                  },
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "setAdvertisingId",
+                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "advertId",
+                        "type": "java.lang.String"
+                      }
+                    ]
+                  },
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "setLimitAdTracking",
+                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "limitAdTracking",
+                        "type": "boolean"
+                      }
+                    ]
+                  },
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "setConfigUrl",
+                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "newConfigUrl",
+                        "type": "java.lang.String"
+                      }
+                    ]
+                  },
+                  {
+                    "modifiers": [
+                      "public"
+                    ],
+                    "name": "create",
+                    "returnType": "void",
+                    "params": [
+                      {
+                        "modifiers": [
+                          "final"
+                        ],
+                        "name": "callback",
+                        "type": "com.aol.mobile.sdk.player.OneSDKBuilder.Callback"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "modifiers": [
+                  "public",
+                  "abstract",
+                  "static"
+                ],
+                "name": "com.aol.mobile.sdk.player.OneSDKBuilder.Callback",
+                "fields": [],
+                "methods": [
+                  {
+                    "modifiers": [
+                      "public",
+                      "abstract"
+                    ],
+                    "name": "onSuccess",
+                    "returnType": "void",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "oneSDK",
+                        "type": "com.aol.mobile.sdk.player.OneSDK"
+                      }
+                    ]
+                  },
+                  {
+                    "modifiers": [
+                      "public",
+                      "abstract"
+                    ],
+                    "name": "onFailure",
+                    "returnType": "void",
+                    "params": [
+                      {
+                        "modifiers": [],
+                        "name": "error",
+                        "type": "java.lang.Exception"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+            """
 
         val descriptorList: List<TypeDescriptor> = deserializeTypeDescriptors(json)
         assertThat(descriptorList.size).isEqualTo(3)
-        assertThat(descriptorList.get(0).name).isEqualTo("com.aol.mobile.sdk.player.OneSDK")
-        val firstMethodDescriptor: MethodDescriptor = descriptorList.get(0).methods.iterator().next()
+        assertThat(descriptorList[0].name).isEqualTo("com.aol.mobile.sdk.player.OneSDK")
+        val firstMethodDescriptor: MethodDescriptor = descriptorList[0].methods.iterator().next()
         assertThat(firstMethodDescriptor.name).isEqualTo("constructor")
         assertThat(firstMethodDescriptor.params.size).isEqualTo(2)
     }

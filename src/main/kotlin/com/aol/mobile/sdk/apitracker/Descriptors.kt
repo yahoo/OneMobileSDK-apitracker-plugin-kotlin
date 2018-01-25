@@ -43,3 +43,7 @@ data class UniversalDescriptor(val modifiers: List<String>,
 enum class Kind {
     TYPE, FIELD, METHOD
 }
+
+enum class ChangeType {
+    REMOVAL, ADDITION
+}

@@ -26,3 +26,7 @@ import com.google.gson.Gson
 fun deserializeTypeDescriptors(json: String): List<TypeDescriptor> {
     return Gson().fromJson(json)
 }
+
+fun getUniversalDescriptorsChangeType(oldList: List<UniversalDescriptor>, newList: List<UniversalDescriptor>) =
+        (oldList - newList).associate { it to ChangeType.REMOVAL } + (newList - oldList).associate { it to ChangeType.ADDITION }
+
