@@ -18,34 +18,16 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-buildscript {
-    ext {
-        KOTLIN_VERSION = '1.2.21'
+package com.aol.mobile.sdk.apitracker
+
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+
+
+class ApiCompareTask : DefaultTask() {
+
+    @TaskAction
+    fun comparePublicApi() {
+
     }
-
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
-    }
-}
-
-apply plugin: "java-gradle-plugin"
-apply plugin: "kotlin"
-
-repositories {
-    jcenter()
-}
-
-dependencies {
-    compileOnly gradleApi()
-    testCompileOnly gradleTestKit()
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
-    implementation "com.github.salomonbrys.kotson:kotson:2.5.0"
-
-    testImplementation "junit:junit:4.12"
-    testImplementation "org.assertj:assertj-core:3.9.0"
 }

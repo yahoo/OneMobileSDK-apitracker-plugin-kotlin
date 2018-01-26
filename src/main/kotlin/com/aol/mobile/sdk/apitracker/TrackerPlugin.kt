@@ -20,3 +20,48 @@
 
 package com.aol.mobile.sdk.apitracker
 
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import java.io.File
+
+const val CLASSIFIER = "pubapi"
+const val CONFIGURATION = "publicApiManifest"
+const val API_COLLECTOR_VERSION = "1.2"
+const val API_ANNOTATIONS_VERSION = "1.1"
+
+class TrackerPlugin : Plugin<Project> {
+    open class Extension {
+        var compareVersion: String = "1.0"
+    }
+
+    override fun apply(project: Project) {
+        with(project) {
+            val ext = extensions.create("apiTracker", Extension::class.java)
+
+            afterEvaluate {
+                it.artifacts.add("archives", File(project.rootDir, "public_api.json")) {
+                    it.classifier = CLASSIFIER
+                }
+
+                with(dependencies) {
+                    add(CONFIGURATION, "$group:${properties["archivesBaseName"]}:${ext.compareVersion}:$CLASSIFIER@json")
+                }
+            }
+
+            with(configurations) {
+                create(CONFIGURATION).apply {
+                    isTransitive = false
+                    isVisible = false
+                    description = "Public api tracker configuration"
+                }
+            }
+
+            with(dependencies) {
+                add("kapt", "com.aol.one.publishers.android:api-collector:$API_COLLECTOR_VERSION")
+                add("compileOnly", "com.aol.one.publishers.android:annotations:$API_ANNOTATIONS_VERSION")
+            }
+
+            tasks.add(ApiCompareTask())
+        }
+    }
+}
