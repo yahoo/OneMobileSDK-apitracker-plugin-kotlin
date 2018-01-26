@@ -17,6 +17,7 @@ out/
 .idea/*.xml
 .idea/libraries
 .idea/modules
+/.idea/dictionaries/*.xml
 *.iml
 
 # Gradle files
@@ -39,3 +40,4 @@ proguard/
 # Android Studio captures folder
 captures/
 *.DS_Store
+.idea/inspectionProfiles/
