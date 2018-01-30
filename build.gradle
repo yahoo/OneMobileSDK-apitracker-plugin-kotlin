@@ -21,6 +21,7 @@
 buildscript {
     ext {
         KOTLIN_VERSION = '1.2.21'
+        API_COLLECTOR_VERSION = '1.2-SNAPSHOT'
     }
 
     repositories {
@@ -37,15 +38,22 @@ apply plugin: "kotlin"
 
 repositories {
     jcenter()
+    google()
+    maven {
+        url 'https://raw.githubusercontent.com/aol-public/OneMobileSDK-releases-android/maven/'
+    }
 }
 
 dependencies {
     compileOnly gradleApi()
-    testCompileOnly gradleTestKit()
+    implementation "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
+    implementation "com.android.tools.build:gradle:3.0.1"
 
+    implementation "com.aol.one.publishers.android:api-collector:$API_COLLECTOR_VERSION"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     implementation "com.github.salomonbrys.kotson:kotson:2.5.0"
 
+    testCompileOnly gradleTestKit()
     testImplementation "junit:junit:4.12"
     testImplementation "org.assertj:assertj-core:3.9.0"
 }

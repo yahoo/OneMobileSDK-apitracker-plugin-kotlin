@@ -20,36 +20,44 @@
 
 package com.aol.mobile.sdk.apitracker
 
+import com.aol.mobile.sdk.apicollector.BUILD_PATH_KEY
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import java.io.File
 
-const val CLASSIFIER = "pubapi"
-const val CONFIGURATION = "publicApiManifest"
-const val API_COLLECTOR_VERSION = "1.2"
-const val API_ANNOTATIONS_VERSION = "1.1"
-
 class TrackerPlugin : Plugin<Project> {
+    companion object {
+        const val API_COLLECTOR_VERSION = "1.2-SNAPSHOT"
+        const val API_ANNOTATIONS_VERSION = "1.1"
+
+        const val PUBLIC_API_CLASSIFIER = "pubapi"
+        const val PUBLIC_API_CONFIGURATION = "publicApiManifest"
+        const val API_TRACKER_EXT = "apiTracker"
+        const val KAPT_PLUGIN = "kotlin-kapt"
+
+        const val API_COLLECTOR_REF = "com.aol.one.publishers.android:api-collector:$API_COLLECTOR_VERSION"
+        const val ANNOTATIONS_REF = "com.aol.one.publishers.android:annotations:$API_ANNOTATIONS_VERSION"
+    }
+
     open class Extension {
         var compareVersion: String = "1.0"
     }
 
     override fun apply(project: Project) {
         with(project) {
-            val ext = extensions.create("apiTracker", Extension::class.java)
+            pluginManager.apply(KAPT_PLUGIN)
 
-            afterEvaluate {
-                it.artifacts.add("archives", File(project.rootDir, "public_api.json")) {
-                    it.classifier = CLASSIFIER
+            with(extensions) {
+                getByType(KaptExtension::class.java).arguments {
+                    arg(BUILD_PATH_KEY, buildDir.absolutePath)
                 }
 
-                with(dependencies) {
-                    add(CONFIGURATION, "$group:${properties["archivesBaseName"]}:${ext.compareVersion}:$CLASSIFIER@json")
-                }
+                create(API_TRACKER_EXT, Extension::class.java)
             }
 
             with(configurations) {
-                create(CONFIGURATION).apply {
+                create(PUBLIC_API_CONFIGURATION).apply {
                     isTransitive = false
                     isVisible = false
                     description = "Public api tracker configuration"
@@ -57,11 +65,41 @@ class TrackerPlugin : Plugin<Project> {
             }
 
             with(dependencies) {
-                add("kapt", "com.aol.one.publishers.android:api-collector:$API_COLLECTOR_VERSION")
-                add("compileOnly", "com.aol.one.publishers.android:annotations:$API_ANNOTATIONS_VERSION")
+                add("kapt", API_COLLECTOR_REF)
+                add("compileOnly", ANNOTATIONS_REF)
             }
 
-            tasks.add(ApiCompareTask())
+            afterEvaluate {
+                val publicManifestRef = "$group:" +
+                        "${properties["archivesBaseName"]}:" +
+                        "${extensions[Extension::class.java].compareVersion}:" +
+                        "$PUBLIC_API_CLASSIFIER@json"
+
+                with(artifacts) {
+                    add("archives", manifestFile) { artifact ->
+                        artifact.classifier = PUBLIC_API_CLASSIFIER
+                    }
+                }
+
+                with(dependencies) {
+                    add(PUBLIC_API_CONFIGURATION, publicManifestRef)
+                }
+
+                with(tasks) {
+                    create("checkApiChanges", ApiCompareTask::class.java) { task ->
+                        with(task) {
+                            oldManifest = try {
+                                configurations[PUBLIC_API_CONFIGURATION].resolve().firstOrNull()
+                            } catch (ignored: Exception) {
+                                null
+                            }
+                            newManifest = manifestFile
+                            changeReport = File(buildDir, "changeReport.txt")
+                        }
+                    }.dependsOn(getByName("kaptReleaseKotlin"))
+                }
+            }
         }
     }
 }
+

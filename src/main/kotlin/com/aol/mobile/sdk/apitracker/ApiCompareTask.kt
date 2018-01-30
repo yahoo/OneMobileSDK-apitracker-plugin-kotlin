@@ -21,13 +21,22 @@
 package com.aol.mobile.sdk.apitracker
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
-
-class ApiCompareTask : DefaultTask() {
+open class ApiCompareTask : DefaultTask() {
+    @InputFile
+    var oldManifest: File? = null
+    @InputFile
+    var newManifest: File? = null
+    @OutputFile
+    lateinit var changeReport: File
 
     @TaskAction
     fun comparePublicApi() {
-
+        println("old ${oldManifest?.absolutePath}")
+        println("new ${newManifest?.absolutePath}")
     }
 }
