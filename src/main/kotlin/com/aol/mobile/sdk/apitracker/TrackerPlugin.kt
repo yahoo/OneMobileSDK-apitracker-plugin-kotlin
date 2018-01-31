@@ -29,8 +29,8 @@ import java.io.File
 
 class TrackerPlugin : Plugin<Project> {
     companion object {
-        const val API_COLLECTOR_VERSION = "1.2-SNAPSHOT"
-        const val API_ANNOTATIONS_VERSION = "1.1"
+        const val API_COLLECTOR_VERSION = "1.3"
+        const val API_ANNOTATIONS_VERSION = "1.2"
 
         const val PUBLIC_API_CLASSIFIER = "pubapi"
         const val PUBLIC_API_CONFIGURATION = "publicApiManifest"

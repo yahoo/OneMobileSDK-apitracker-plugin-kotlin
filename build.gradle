@@ -19,22 +19,32 @@
  */
 
 buildscript {
-    ext {
-        KOTLIN_VERSION = '1.2.21'
-        API_COLLECTOR_VERSION = '1.2-SNAPSHOT'
-    }
+    apply from: 'https://raw.githubusercontent.com/aol-public/OneMobileSDK-tools-android/master/env-props.gradle'
 
     repositories {
-        mavenCentral()
+        google()
+        jcenter()
     }
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
+        classpath KOTLIN_PLUGIN
+        classpath GIT_PUBLISH_PLUGIN
     }
+}
+
+ext {
+    // Maven
+    GROUP_ID = 'com.aol.one.publishers.android'
+    ARTIFACT_ID = 'api-tracker-plugin'
+    LIBRARY_VERSION = GIT_BASED_VERSION
+    IS_ANDROID = false
+
+    API_COLLECTOR_VERSION = '1.3'
 }
 
 apply plugin: "java-gradle-plugin"
 apply plugin: "kotlin"
+apply from: 'https://raw.githubusercontent.com/aol-public/OneMobileSDK-tools-android/master/github-maven.gradle'
 
 repositories {
     jcenter()
@@ -46,8 +56,8 @@ repositories {
 
 dependencies {
     compileOnly gradleApi()
-    implementation "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
-    implementation "com.android.tools.build:gradle:3.0.1"
+    implementation KOTLIN_PLUGIN
+    implementation ANDROID_GRADLE_PLUGIN
 
     implementation "com.aol.one.publishers.android:api-collector:$API_COLLECTOR_VERSION"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
