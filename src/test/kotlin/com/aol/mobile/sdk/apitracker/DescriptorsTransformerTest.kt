@@ -20,6 +20,7 @@
 
 package com.aol.mobile.sdk.apitracker
 
+import com.aol.mobile.sdk.apitracker.UD.Kind.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -98,24 +99,24 @@ class DescriptorsTransformerTest {
             ]
             """
 
-        typeDescriptors = deserializeTypeDescriptors(json)
+        typeDescriptors = json.asTypeDescriptorList()
     }
 
     @Test
     fun testTransformationOfTypeDescriptorsToUniversalDescriptors() {
-        val universalDescriptors: List<UniversalDescriptor> = typeDescriptors.map { it.toUniversalDescriptors() }.flatten()
+        val UDS: List<UD> = typeDescriptors.map { it.toUdList() }.flatten()
 
-        assertThat(universalDescriptors.size).isEqualTo(6)
+        assertThat(UDS.size).isEqualTo(6)
 
-        assertThat(universalDescriptors[0].fullname).isEqualTo("com.aol.mobile.sdk.player.OneSDK")
-        assertThat(universalDescriptors[0].kind).isEqualTo(Kind.TYPE)
+        assertThat(UDS[0].fullName).isEqualTo("com.aol.mobile.sdk.player.OneSDK")
+        assertThat(UDS[0].kind).isEqualTo(TYPE)
 
-        assertThat(universalDescriptors[1].fullname).isEqualTo("com.aol.mobile.sdk.player.OneSDK.field1")
-        assertThat(universalDescriptors[1].kind).isEqualTo(Kind.FIELD)
-        assertThat(universalDescriptors[1].returnType).isEqualTo("int")
+        assertThat(UDS[1].fullName).isEqualTo("com.aol.mobile.sdk.player.OneSDK.field1")
+        assertThat(UDS[1].kind).isEqualTo(FIELD)
+        assertThat(UDS[1].returnType).isEqualTo("int")
 
-        assertThat(universalDescriptors[5].fullname).isEqualTo("com.aol.mobile.sdk.player.TwoSDK.method2")
-        assertThat(universalDescriptors[5].kind).isEqualTo(Kind.METHOD)
-        assertThat(universalDescriptors[5].returnType).isEqualTo("void")
+        assertThat(UDS[5].fullName).isEqualTo("com.aol.mobile.sdk.player.TwoSDK.method2")
+        assertThat(UDS[5].kind).isEqualTo(METHOD)
+        assertThat(UDS[5].returnType).isEqualTo("void")
     }
 }

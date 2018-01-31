@@ -20,6 +20,8 @@
 
 package com.aol.mobile.sdk.apitracker
 
+import com.aol.mobile.sdk.apitracker.UD.Companion.ChangeType.ADDITION
+import com.aol.mobile.sdk.apitracker.UD.Companion.ChangeType.REMOVAL
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -40,7 +42,7 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val oldList = deserializeTypeDescriptors(oldJson).map { it.toUniversalDescriptors() }.flatten()
+        val oldList = oldJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
 
         val newJson = """
             [
@@ -64,11 +66,11 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val newList = deserializeTypeDescriptors(newJson).map { it.toUniversalDescriptors() }.flatten()
-        val changes = getUniversalDescriptorsChangeType(oldList, newList)
+        val newList = newJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
+        val changes = UD.getChanges(oldList, newList)
 
         assertThat(changes.size).isEqualTo(1)
-        assertThat(changes[newList[1]]).isEqualTo(ChangeType.ADDITION)
+        assertThat(changes[newList[1]]).isEqualTo(UD.Companion.ChangeType.ADDITION)
     }
 
     @Test
@@ -95,7 +97,7 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val oldList = deserializeTypeDescriptors(oldJson).map { it.toUniversalDescriptors() }.flatten()
+        val oldList = oldJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
 
         val newJson = """
             [
@@ -110,11 +112,11 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val newList = deserializeTypeDescriptors(newJson).map { it.toUniversalDescriptors() }.flatten()
-        val changes = getUniversalDescriptorsChangeType(oldList, newList)
+        val newList = newJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
+        val changes = UD.getChanges(oldList, newList)
 
         assertThat(changes.size).isEqualTo(1)
-        assertThat(changes[oldList[1]]).isEqualTo(ChangeType.REMOVAL)
+        assertThat(changes[oldList[1]]).isEqualTo(REMOVAL)
     }
 
     @Test
@@ -132,7 +134,7 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val oldList = deserializeTypeDescriptors(oldJson).map { it.toUniversalDescriptors() }.flatten()
+        val oldList = oldJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
 
         val newJson = """
             [
@@ -148,12 +150,12 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val newList = deserializeTypeDescriptors(newJson).map { it.toUniversalDescriptors() }.flatten()
-        val changes = getUniversalDescriptorsChangeType(oldList, newList)
+        val newList = newJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
+        val changes = UD.getChanges(oldList, newList)
 
         assertThat(changes.size).isEqualTo(2)
-        assertThat(changes[oldList[0]]).isEqualTo(ChangeType.REMOVAL)
-        assertThat(changes[newList[0]]).isEqualTo(ChangeType.ADDITION)
+        assertThat(changes[oldList[0]]).isEqualTo(REMOVAL)
+        assertThat(changes[newList[0]]).isEqualTo(ADDITION)
     }
 
     @Test
@@ -180,7 +182,7 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val oldList = deserializeTypeDescriptors(oldJson).map { it.toUniversalDescriptors() }.flatten()
+        val oldList = oldJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
 
         val newJson = """
             [
@@ -212,11 +214,11 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val newList = deserializeTypeDescriptors(newJson).map { it.toUniversalDescriptors() }.flatten()
-        val changes = getUniversalDescriptorsChangeType(oldList, newList)
+        val newList = newJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
+        val changes = UD.getChanges(oldList, newList)
 
         assertThat(changes.size).isEqualTo(1)
-        assertThat(changes[newList[2]]).isEqualTo(ChangeType.ADDITION)
+        assertThat(changes[newList[2]]).isEqualTo(ADDITION)
     }
 
     @Test
@@ -251,7 +253,7 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val oldList = deserializeTypeDescriptors(oldJson).map { it.toUniversalDescriptors() }.flatten()
+        val oldList = oldJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
 
         val newJson = """
             [
@@ -275,11 +277,11 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val newList = deserializeTypeDescriptors(newJson).map { it.toUniversalDescriptors() }.flatten()
-        val changes = getUniversalDescriptorsChangeType(oldList, newList)
+        val newList = newJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
+        val changes = UD.getChanges(oldList, newList)
 
         assertThat(changes.size).isEqualTo(1)
-        assertThat(changes[oldList[2]]).isEqualTo(ChangeType.REMOVAL)
+        assertThat(changes[oldList[2]]).isEqualTo(REMOVAL)
     }
 
     @Test
@@ -306,7 +308,7 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val oldList = deserializeTypeDescriptors(oldJson).map { it.toUniversalDescriptors() }.flatten()
+        val oldList = oldJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
 
         val newJson = """
             [
@@ -331,12 +333,12 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val newList = deserializeTypeDescriptors(newJson).map { it.toUniversalDescriptors() }.flatten()
-        val changes = getUniversalDescriptorsChangeType(oldList, newList)
+        val newList = newJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
+        val changes = UD.getChanges(oldList, newList)
 
         assertThat(changes.size).isEqualTo(2)
-        assertThat(changes[oldList[1]]).isEqualTo(ChangeType.REMOVAL)
-        assertThat(changes[newList[1]]).isEqualTo(ChangeType.ADDITION)
+        assertThat(changes[oldList[1]]).isEqualTo(REMOVAL)
+        assertThat(changes[newList[1]]).isEqualTo(ADDITION)
     }
 
     @Test
@@ -369,7 +371,7 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val oldList = deserializeTypeDescriptors(oldJson).map { it.toUniversalDescriptors() }.flatten()
+        val oldList = oldJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
 
         val newJson = """
             [
@@ -413,11 +415,11 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val newList = deserializeTypeDescriptors(newJson).map { it.toUniversalDescriptors() }.flatten()
-        val changes = getUniversalDescriptorsChangeType(oldList, newList)
+        val newList = newJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
+        val changes = UD.getChanges(oldList, newList)
 
         assertThat(changes.size).isEqualTo(1)
-        assertThat(changes[newList[2]]).isEqualTo(ChangeType.ADDITION)
+        assertThat(changes[newList[2]]).isEqualTo(ADDITION)
     }
 
     @Test
@@ -464,7 +466,7 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val oldList = deserializeTypeDescriptors(oldJson).map { it.toUniversalDescriptors() }.flatten()
+        val oldList = oldJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
 
         val newJson = """
             [
@@ -494,11 +496,11 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val newList = deserializeTypeDescriptors(newJson).map { it.toUniversalDescriptors() }.flatten()
-        val changes = getUniversalDescriptorsChangeType(oldList, newList)
+        val newList = newJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
+        val changes = UD.getChanges(oldList, newList)
 
         assertThat(changes.size).isEqualTo(1)
-        assertThat(changes[oldList[2]]).isEqualTo(ChangeType.REMOVAL)
+        assertThat(changes[oldList[2]]).isEqualTo(REMOVAL)
     }
 
     @Test
@@ -531,7 +533,7 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val oldList = deserializeTypeDescriptors(oldJson).map { it.toUniversalDescriptors() }.flatten()
+        val oldList = oldJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
 
         val newJson = """
             [
@@ -562,11 +564,11 @@ class DescriptorsComparatorTest {
               }
             ]
             """
-        val newList = deserializeTypeDescriptors(newJson).map { it.toUniversalDescriptors() }.flatten()
-        val changes = getUniversalDescriptorsChangeType(oldList, newList)
+        val newList = newJson.asTypeDescriptorList().map { it.toUdList() }.flatten()
+        val changes = UD.getChanges(oldList, newList)
 
         assertThat(changes.size).isEqualTo(2)
-        assertThat(changes[oldList[1]]).isEqualTo(ChangeType.REMOVAL)
-        assertThat(changes[newList[1]]).isEqualTo(ChangeType.ADDITION)
+        assertThat(changes[oldList[1]]).isEqualTo(REMOVAL)
+        assertThat(changes[newList[1]]).isEqualTo(ADDITION)
     }
 }

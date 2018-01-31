@@ -20,39 +20,22 @@
 
 package com.aol.mobile.sdk.apitracker
 
-private fun TypeDescriptor.toUD(): UniversalDescriptor {
-    return UniversalDescriptor(
-            this.modifiers.toList(),
-            null,
-            this.name,
-            Kind.TYPE,
-            emptyList()
-    )
-}
+import com.aol.mobile.sdk.apitracker.UD.Kind.*
+import com.github.salomonbrys.kotson.fromJson
+import com.google.gson.Gson
 
-private fun VariableDescriptor.toUD(typeName: String): UniversalDescriptor {
-    return UniversalDescriptor(
-            this.modifiers.toList(),
-            this.type,
-            typeName + "." + this.name,
-            Kind.FIELD,
-            emptyList()
-    )
-}
+internal fun String.asTypeDescriptorList(): List<TypeDescriptor> = Gson().fromJson(this)
 
-private fun MethodDescriptor.toUD(typeName: String): UniversalDescriptor {
-    return UniversalDescriptor(
-            this.modifiers.toList(),
-            this.returnType,
-            typeName + "." + this.name,
-            Kind.METHOD,
-            this.params.map { it.type }
-    )
-}
+private fun TypeDescriptor.asUdList() =
+        UD(modifiers.toList(), null, name, TYPE, emptyList())
 
-fun TypeDescriptor.toUniversalDescriptors(): List<UniversalDescriptor> {
-    return emptyList<UniversalDescriptor>()
-            .plus(this.toUD())
-            .plus(this.fields.map { it.toUD(this.name) })
-            .plus(this.methods.map { it.toUD(this.name) })
-}
+private fun VariableDescriptor.asUdList(typeName: String) =
+        UD(modifiers.toList(), type, typeName + "." + this.name, FIELD, emptyList())
+
+private fun MethodDescriptor.asUdList(typeName: String) =
+        UD(modifiers.toList(), returnType, typeName + "." + this.name, METHOD, params.map { it.type })
+
+internal fun TypeDescriptor.toUdList() =
+        listOf(asUdList()) + fields.map { it.asUdList(name) } + methods.map { it.asUdList(name) }
+
+internal fun List<TypeDescriptor>.asUdList() = map { it.toUdList() }.flatten()

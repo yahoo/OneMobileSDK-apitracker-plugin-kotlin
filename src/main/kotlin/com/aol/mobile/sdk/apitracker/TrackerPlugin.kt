@@ -23,6 +23,7 @@ package com.aol.mobile.sdk.apitracker
 import com.aol.mobile.sdk.apicollector.BUILD_PATH_KEY
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.ResolveException
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import java.io.File
 
@@ -88,13 +89,14 @@ class TrackerPlugin : Plugin<Project> {
                 with(tasks) {
                     create("checkApiChanges", ApiCompareTask::class.java) { task ->
                         with(task) {
-                            oldManifest = try {
-                                configurations[PUBLIC_API_CONFIGURATION].resolve().firstOrNull()
-                            } catch (ignored: Exception) {
-                                null
+                            oldManifestFile = try {
+                                configurations[PUBLIC_API_CONFIGURATION].resolve().first()
+                            } catch (ignored: ResolveException) {
+                                logger.warn("Could not fetch $publicManifestRef, report will not contain any changes")
+                                manifestFile
                             }
-                            newManifest = manifestFile
-                            changeReport = File(buildDir, "changeReport.txt")
+                            newManifestFile = manifestFile
+                            changeReportFile = File(buildDir, "changeReport.txt")
                         }
                     }.dependsOn(getByName("kaptReleaseKotlin"))
                 }
