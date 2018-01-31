@@ -28,15 +28,30 @@ import java.io.File
 
 open class ApiCompareTask : DefaultTask() {
     @InputFile
-    var oldManifest: File? = null
+    lateinit var oldManifestFile: File
     @InputFile
-    var newManifest: File? = null
+    lateinit var newManifestFile: File
     @OutputFile
-    lateinit var changeReport: File
+    lateinit var changeReportFile: File
 
+    @Suppress("unused")
     @TaskAction
     fun comparePublicApi() {
-        println("old ${oldManifest?.absolutePath}")
-        println("new ${newManifest?.absolutePath}")
+        val newManifest = newManifestFile.readText()
+                .asTypeDescriptorList()
+                .asUdList()
+
+        val oldManifest = oldManifestFile.readText()
+                .asTypeDescriptorList()
+                .asUdList()
+
+        changeReportFile.bufferedWriter().use { report ->
+            with(report) {
+                UD.getChanges(oldManifest, newManifest).forEach {
+                    write("${it.value} ${it.key}")
+                    newLine()
+                }
+            }
+        }
     }
 }

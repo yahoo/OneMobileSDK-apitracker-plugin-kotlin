@@ -20,13 +20,19 @@
 
 package com.aol.mobile.sdk.apitracker
 
-import com.github.salomonbrys.kotson.fromJson
-import com.google.gson.Gson
+import com.aol.mobile.sdk.apitracker.UD.Companion.ChangeType.ADDITION
+import com.aol.mobile.sdk.apitracker.UD.Companion.ChangeType.REMOVAL
 
-fun deserializeTypeDescriptors(json: String): List<TypeDescriptor> {
-    return Gson().fromJson(json)
+data class UD(val modifiers: List<String>, val returnType: String?, val fullName: String,
+              val kind: Kind, val params: List<String>) {
+
+    enum class Kind { TYPE, FIELD, METHOD }
+
+    companion object {
+        enum class ChangeType { REMOVAL, ADDITION }
+
+        internal fun getChanges(oldList: List<UD>, newList: List<UD>) =
+                (oldList - newList).associate { it to REMOVAL } + (newList - oldList).associate { it to ADDITION }
+    }
 }
-
-fun getUniversalDescriptorsChangeType(oldList: List<UniversalDescriptor>, newList: List<UniversalDescriptor>) =
-        (oldList - newList).associate { it to ChangeType.REMOVAL } + (newList - oldList).associate { it to ChangeType.ADDITION }
 
