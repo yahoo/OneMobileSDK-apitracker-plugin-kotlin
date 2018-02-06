@@ -20,12 +20,33 @@
 
 package com.aol.mobile.sdk.apitracker
 
-import org.assertj.core.api.Assertions.assertThat
+import junit.framework.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 
-class DescriptorsDeserializerTest {
-    @Test
-    fun testTypeDescriptorsDeserializationFromJson() {
+class ProguardGeneratorTest {
+    private lateinit var expectedProguard: String
+    private lateinit var actualProguard: String
+
+    private lateinit var typeDescriptors: List<TypeDescriptor>
+
+    @Before
+    fun before() {
+        expectedProguard = """
+            -keep public class com.aol.mobile.sdk.player.OneSDK {
+                public protected *;
+            }
+
+            -keep public class com.aol.mobile.sdk.player.OneSDKBuilder {
+                public protected *;
+            }
+
+            -keep public class com.aol.mobile.sdk.player.OneSDKBuilder.Callback {
+                public protected *;
+            }
+
+            """.trimIndent()
+
         val json = """
             [
               {
@@ -255,11 +276,13 @@ class DescriptorsDeserializerTest {
             ]
             """
 
-        val typeDescriptors: List<TypeDescriptor> = json.asTypeDescriptorList()
-        assertThat(typeDescriptors.size).isEqualTo(3)
-        assertThat(typeDescriptors[0].name).isEqualTo("com.aol.mobile.sdk.player.OneSDK")
-        val firstMethodDescriptor: MethodDescriptor = typeDescriptors[0].methods.iterator().next()
-        assertThat(firstMethodDescriptor.name).isEqualTo("constructor")
-        assertThat(firstMethodDescriptor.params.size).isEqualTo(2)
+        typeDescriptors = json.asTypeDescriptorList()
+    }
+
+    @Test
+    fun testProguardGenerationOfTypes() {
+        actualProguard = generateProguardContent(typeDescriptors)
+
+        assertEquals(expectedProguard, actualProguard)
     }
 }
