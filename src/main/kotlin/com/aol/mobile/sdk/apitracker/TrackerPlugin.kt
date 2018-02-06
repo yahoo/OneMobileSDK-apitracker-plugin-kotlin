@@ -99,9 +99,18 @@ class TrackerPlugin : Plugin<Project> {
                             changeReportFile = File(buildDir, "changeReport.txt")
                         }
                     }.dependsOn(getByName("kaptReleaseKotlin"))
+
+                    create("generateProguard", ProguardGenerateTask::class.java) { task ->
+                        with(task) {
+                            newManifestFile = manifestFile
+                            proguardFile = File(projectDir, "proguard-classes.pro")
+                        }
+                    }.dependsOn(getByName("kaptDebugKotlin"))
+
+                    getByName("compileDebugKotlin")
+                            .dependsOn(getByName("generateProguard"))
                 }
             }
         }
     }
 }
-
