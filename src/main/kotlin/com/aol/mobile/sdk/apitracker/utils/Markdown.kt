@@ -24,8 +24,14 @@ import com.aol.mobile.sdk.apitracker.dto.*
 
 
 object Markdown {
-    fun render(apiChanges: List<ClassRecord>) =
-            "# Public API changes\n" + apiChanges.joinToString(separator = "\n-----\n") { it.renderToMd() }
+    fun render(implicitNamespaces: List<String> = listOf("java.lang"), apiChanges: List<ClassRecord>): String {
+        val markdown = "# Public API changes\n" +
+                apiChanges.joinToString(separator = "\n\n-----\n\n") { it.renderToMd() }
+
+        return implicitNamespaces.distinct().fold(markdown) { md, namespace ->
+            md.replace("$namespace.", "")
+        }
+    }
 
     @JvmName("renderModifiersToMd")
     private fun List<Modifier>.renderToMd() = filter { it !is Modifier.Untouched }
@@ -33,11 +39,11 @@ object Markdown {
 
     @JvmName("renderMethodsToMd")
     private fun List<MethodRecord>.renderToMd() = if (isEmpty()) String() else
-        "#### Methods\n" + joinToString(separator = "\n> ", prefix = "> ") { it.renderToMd() }
+        "#### Methods\n" + joinToString(separator = "\n> ", prefix = "\n> ", postfix = "\n\n") { it.renderToMd() }
 
     @JvmName("renderFieldsToMd")
     private fun List<PropertyRecord>.renderToMd() = if (isEmpty()) String() else
-        "#### Fields\n" + joinToString(separator = "\n> ", prefix = "> ") { it.renderToMd() }
+        "#### Fields\n" + joinToString(separator = "\n> ", prefix = "\n> ", postfix = "\n\n") { it.renderToMd() }
 
     private fun Modifier.renderToMd() = when (this) {
         is Modifier.New -> "*$name*"
@@ -73,13 +79,20 @@ object Markdown {
             val modifiers = modifiers.renderToMd()
             val fields = properties.renderToMd()
             val methods = methods.renderToMd()
-            "### NEW: $modifiers $name\n$fields\n$methods\n"
+
+            """|### NEW: $modifiers $name
+               |$fields
+               |$methods""".trimMargin()
         }
         is ClassRecord.Modified -> {
             val modifiers = modifiers.renderToMd()
+            val name = name.renderToMd()
             val fields = properties.renderToMd()
             val methods = methods.renderToMd()
-            "### $modifiers ${name.renderToMd()}\n$fields\n$methods\n"
+
+            """|### $modifiers $name
+               |$fields
+               |$methods""".trimMargin()
         }
     }
 }
