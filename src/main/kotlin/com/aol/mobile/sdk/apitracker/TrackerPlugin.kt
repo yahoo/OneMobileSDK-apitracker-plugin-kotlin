@@ -21,6 +21,10 @@
 package com.aol.mobile.sdk.apitracker
 
 import com.aol.mobile.sdk.apicollector.BUILD_PATH_KEY
+import com.aol.mobile.sdk.apitracker.tasks.ApiCompareTask
+import com.aol.mobile.sdk.apitracker.tasks.ProguardGenerateTask
+import com.aol.mobile.sdk.apitracker.utils.get
+import com.aol.mobile.sdk.apitracker.utils.manifestFile
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ResolveException

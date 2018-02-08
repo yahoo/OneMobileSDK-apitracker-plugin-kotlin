@@ -18,14 +18,28 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.aol.mobile.sdk.apitracker
+package com.aol.mobile.sdk.apitracker.tasks
 
-fun generateProguardContent(typeDescriptors: List<TypeDescriptor>) =
+import com.aol.mobile.sdk.apitracker.dto.asTypeDescriptorList
+import com.aol.mobile.sdk.apitracker.utils.Proguard
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
+import java.io.File
 
-        typeDescriptors.joinToString(separator = "\n\n", postfix = "\n") {
-            """
-            -keep public class ${it.name} {
-                public protected *;
-            }
-            """.trimIndent()
-        }
+open class ProguardGenerateTask : DefaultTask() {
+    @InputFile
+    lateinit var newManifestFile: File
+    @OutputFile
+    lateinit var proguardFile: File
+
+    @Suppress("unused")
+    @TaskAction
+    fun generateProguard() {
+        val newManifest = newManifestFile.readText()
+                .asTypeDescriptorList()
+
+        proguardFile.writeText(Proguard.generateRules(newManifest))
+    }
+}

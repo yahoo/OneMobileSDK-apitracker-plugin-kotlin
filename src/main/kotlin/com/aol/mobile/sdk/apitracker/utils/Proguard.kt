@@ -18,29 +18,15 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.aol.mobile.sdk.apitracker
+package com.aol.mobile.sdk.apitracker.utils
 
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.TaskAction
-import java.io.File
+import com.aol.mobile.sdk.apitracker.dto.TypeDescriptor
 
-open class ApiCompareTask : DefaultTask() {
-    @InputFile
-    lateinit var oldManifestFile: File
-    @InputFile
-    lateinit var newManifestFile: File
-    @OutputFile
-    lateinit var changeReportFile: File
-
-    @Suppress("unused")
-    @TaskAction
-    fun comparePublicApi() {
-        val newManifest = newManifestFile.readText().asTypeDescriptorList()
-        val oldManifest = oldManifestFile.readText().asTypeDescriptorList()
-        val changeReport = ChangeAggregator.process(oldManifest, newManifest)
-
-        changeReportFile.writeText(Markdown.render(changeReport))
-    }
+object Proguard {
+    fun generateRules(typeDescriptors: List<TypeDescriptor>) = typeDescriptors
+            .joinToString(separator = "\n\n", postfix = "\n") { type ->
+                """|-keep public class ${type.name} {
+                   |    public protected *;
+                   |}""".trimMargin()
+            }
 }

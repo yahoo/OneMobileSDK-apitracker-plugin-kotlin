@@ -18,12 +18,32 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.aol.mobile.sdk.apitracker
+package com.aol.mobile.sdk.apitracker.tasks
 
-data class TypeDescriptor(val modifiers: Collection<String>, val name: String,
-                          val fields: Set<VariableDescriptor>, val methods: Set<MethodDescriptor>)
+import com.aol.mobile.sdk.apitracker.dto.asTypeDescriptorList
+import com.aol.mobile.sdk.apitracker.utils.ChangeAggregator
+import com.aol.mobile.sdk.apitracker.utils.Markdown
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.TaskAction
+import java.io.File
 
-data class VariableDescriptor(val modifiers: Collection<String>, val name: String, val type: String)
+open class ApiCompareTask : DefaultTask() {
+    @InputFile
+    lateinit var oldManifestFile: File
+    @InputFile
+    lateinit var newManifestFile: File
+    @OutputFile
+    lateinit var changeReportFile: File
 
-data class MethodDescriptor(val modifiers: Collection<String>, val name: String,
-                            val returnType: String, val params: List<VariableDescriptor>)
+    @Suppress("unused")
+    @TaskAction
+    fun comparePublicApi() {
+        val newManifest = newManifestFile.readText().asTypeDescriptorList()
+        val oldManifest = oldManifestFile.readText().asTypeDescriptorList()
+        val changeReport = ChangeAggregator.process(oldManifest, newManifest)
+
+        changeReportFile.writeText(Markdown.render(changeReport))
+    }
+}
