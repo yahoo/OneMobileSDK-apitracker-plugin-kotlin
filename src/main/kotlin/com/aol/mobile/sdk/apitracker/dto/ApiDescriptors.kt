@@ -18,17 +18,17 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.aol.mobile.sdk.apitracker
+package com.aol.mobile.sdk.apitracker.dto
 
-import com.aol.mobile.sdk.apicollector.PUBLIC_API_FILENAME
-import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ConfigurationContainer
-import org.gradle.api.plugins.ExtensionContainer
-import java.io.File
+import com.github.salomonbrys.kotson.fromJson
+import com.google.gson.Gson
 
-operator fun ConfigurationContainer.get(name: String): Configuration = getByName(name)
+data class TypeDescriptor(val modifiers: Collection<String>, val name: String,
+                          val fields: Set<VariableDescriptor>, val methods: Set<MethodDescriptor>)
 
-operator fun <T> ExtensionContainer.get(aClass: Class<T>): T = getByType(aClass)
+data class VariableDescriptor(val modifiers: Collection<String>, val name: String, val type: String)
 
-val Project.manifestFile get() = File(buildDir, PUBLIC_API_FILENAME)
+data class MethodDescriptor(val modifiers: Collection<String>, val name: String,
+                            val returnType: String, val params: List<VariableDescriptor>)
+
+internal fun String.asTypeDescriptorList(): List<TypeDescriptor> = Gson().fromJson(this)

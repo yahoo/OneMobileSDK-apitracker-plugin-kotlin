@@ -18,26 +18,17 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.aol.mobile.sdk.apitracker
+package com.aol.mobile.sdk.apitracker.utils
 
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.TaskAction
+import com.aol.mobile.sdk.apicollector.PUBLIC_API_FILENAME
+import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.plugins.ExtensionContainer
 import java.io.File
 
-open class ProguardGenerateTask : DefaultTask() {
-    @InputFile
-    lateinit var newManifestFile: File
-    @OutputFile
-    lateinit var proguardFile: File
+operator fun ConfigurationContainer.get(name: String): Configuration = getByName(name)
 
-    @Suppress("unused")
-    @TaskAction
-    fun generateProguard() {
-        val newManifest = newManifestFile.readText()
-                .asTypeDescriptorList()
+operator fun <T> ExtensionContainer.get(aClass: Class<T>): T = getByType(aClass)
 
-        proguardFile.writeText(generateProguardContent(newManifest))
-    }
-}
+val Project.manifestFile get() = File(buildDir, PUBLIC_API_FILENAME)

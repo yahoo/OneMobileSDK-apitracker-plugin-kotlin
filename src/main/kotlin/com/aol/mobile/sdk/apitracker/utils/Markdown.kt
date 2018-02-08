@@ -18,7 +18,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.aol.mobile.sdk.apitracker
+package com.aol.mobile.sdk.apitracker.utils
+
+import com.aol.mobile.sdk.apitracker.dto.*
 
 
 object Markdown {
@@ -31,11 +33,11 @@ object Markdown {
 
     @JvmName("renderMethodsToMd")
     private fun List<MethodRecord>.renderToMd() = if (isEmpty()) String() else
-        "#### Methods\n" + joinToString(separator = "\n", prefix = "> ") { it.renderToMd() }
+        "#### Methods\n" + joinToString(separator = "\n> ", prefix = "> ") { it.renderToMd() }
 
     @JvmName("renderFieldsToMd")
     private fun List<PropertyRecord>.renderToMd() = if (isEmpty()) String() else
-        "#### Fields\n" + joinToString(separator = "\n", prefix = "> ") { it.renderToMd() }
+        "#### Fields\n" + joinToString(separator = "\n> ", prefix = "> ") { it.renderToMd() }
 
     private fun Modifier.renderToMd() = when (this) {
         is Modifier.New -> "*$name*"

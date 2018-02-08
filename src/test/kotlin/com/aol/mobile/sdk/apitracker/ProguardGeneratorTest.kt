@@ -20,7 +20,10 @@
 
 package com.aol.mobile.sdk.apitracker
 
-import junit.framework.Assert.assertEquals
+import com.aol.mobile.sdk.apitracker.dto.TypeDescriptor
+import com.aol.mobile.sdk.apitracker.dto.asTypeDescriptorList
+import com.aol.mobile.sdk.apitracker.utils.Proguard
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 
@@ -281,8 +284,8 @@ class ProguardGeneratorTest {
 
     @Test
     fun testProguardGenerationOfTypes() {
-        actualProguard = generateProguardContent(typeDescriptors)
+        actualProguard = Proguard.generateRules(typeDescriptors)
 
-        assertEquals(expectedProguard, actualProguard)
+        assertThat(expectedProguard).isEqualTo(actualProguard)
     }
 }

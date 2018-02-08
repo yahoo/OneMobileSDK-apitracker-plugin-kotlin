@@ -18,7 +18,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.aol.mobile.sdk.apitracker
+package com.aol.mobile.sdk.apitracker.utils
+
+import com.aol.mobile.sdk.apitracker.dto.*
 
 object ChangeAggregator {
     fun process(old: List<TypeDescriptor>, new: List<TypeDescriptor>): List<ClassRecord> {
@@ -46,7 +48,7 @@ object ChangeAggregator {
 
         newApi.forEach { result += it.asNewClassRecord() }
 
-        return result.toList()
+        return result.sortedBy { it.ordinal }.toList()
     }
 
     private fun TypeDescriptor.asNewClassRecord() = ClassRecord.New(

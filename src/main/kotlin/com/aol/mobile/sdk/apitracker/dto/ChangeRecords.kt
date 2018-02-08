@@ -18,7 +18,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.aol.mobile.sdk.apitracker
+package com.aol.mobile.sdk.apitracker.dto
 
 
 sealed class ClassRecord(val ordinal: Int) {
