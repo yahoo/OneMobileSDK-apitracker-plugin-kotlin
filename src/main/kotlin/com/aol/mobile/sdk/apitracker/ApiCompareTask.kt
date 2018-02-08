@@ -37,21 +37,10 @@ open class ApiCompareTask : DefaultTask() {
     @Suppress("unused")
     @TaskAction
     fun comparePublicApi() {
-        val newManifest = newManifestFile.readText()
-                .asTypeDescriptorList()
-                .asUdList()
+        val newManifest = newManifestFile.readText().asTypeDescriptorList()
+        val oldManifest = oldManifestFile.readText().asTypeDescriptorList()
+        val changeReport = ChangeAggregator.process(oldManifest, newManifest)
 
-        val oldManifest = oldManifestFile.readText()
-                .asTypeDescriptorList()
-                .asUdList()
-
-        changeReportFile.bufferedWriter().use { report ->
-            with(report) {
-                UD.getChanges(oldManifest, newManifest).forEach {
-                    write("${it.value} ${it.key}")
-                    newLine()
-                }
-            }
-        }
+        changeReportFile.writeText(Markdown.render(changeReport))
     }
 }

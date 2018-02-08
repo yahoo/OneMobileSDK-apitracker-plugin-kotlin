@@ -43,6 +43,7 @@ class TrackerPlugin : Plugin<Project> {
 
     open class Extension {
         var compareVersion: String = "1.0"
+        var outputFile = File("API CHANGELOG.md")
     }
 
     override fun apply(project: Project) {
@@ -71,9 +72,10 @@ class TrackerPlugin : Plugin<Project> {
             }
 
             afterEvaluate {
+                val ext = extensions[Extension::class.java]
                 val publicManifestRef = "$group:" +
                         "${properties["archivesBaseName"]}:" +
-                        "${extensions[Extension::class.java].compareVersion}:" +
+                        "${ext.compareVersion}:" +
                         "$PUBLIC_API_CLASSIFIER@json"
 
                 with(artifacts) {
@@ -96,7 +98,7 @@ class TrackerPlugin : Plugin<Project> {
                                 manifestFile
                             }
                             newManifestFile = manifestFile
-                            changeReportFile = File(buildDir, "changeReport.txt")
+                            changeReportFile = ext.outputFile
                         }
                     }.dependsOn(getByName("kaptReleaseKotlin"))
 
