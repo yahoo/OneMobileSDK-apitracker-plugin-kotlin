@@ -47,7 +47,8 @@ class TrackerPlugin : Plugin<Project> {
 
     open class Extension {
         var compareVersion: String = "1.0"
-        var outputFile = File("API CHANGELOG.md")
+        var reportFile = File("API CHANGELOG.md")
+        var implicitNamespaces = listOf("java.lang")
     }
 
     override fun apply(project: Project) {
@@ -102,7 +103,8 @@ class TrackerPlugin : Plugin<Project> {
                                 manifestFile
                             }
                             newManifestFile = manifestFile
-                            changeReportFile = ext.outputFile
+                            changeReportFile = ext.reportFile
+                            implicitNamespaces += ext.implicitNamespaces
                         }
                     }.dependsOn(getByName("kaptReleaseKotlin"))
 
