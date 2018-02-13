@@ -20,24 +20,22 @@
 
 package com.aol.mobile.sdk.apitracker
 
-import com.aol.mobile.sdk.apicollector.BUILD_PATH_KEY
+import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.BUILD_PATH_KEY
 import com.aol.mobile.sdk.apitracker.tasks.ApiCompareTask
 import com.aol.mobile.sdk.apitracker.tasks.ProguardGenerateTask
 import com.aol.mobile.sdk.apitracker.utils.get
 import com.aol.mobile.sdk.apitracker.utils.manifestFile
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.ResolveException
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import java.io.File
 
 class TrackerPlugin : Plugin<Project> {
     companion object {
         const val API_COLLECTOR_VERSION = "1.3-SNAPSHOT"
-        const val API_ANNOTATIONS_VERSION = "1.2"
+        const val API_ANNOTATIONS_VERSION = "1.3"
 
         const val PUBLIC_API_CLASSIFIER = "pubapi"
-        const val PUBLIC_API_CONFIGURATION = "publicApiManifest"
         const val API_TRACKER_EXT = "apiTracker"
         const val KAPT_PLUGIN = "kotlin-kapt"
 
@@ -63,14 +61,6 @@ class TrackerPlugin : Plugin<Project> {
                 create(API_TRACKER_EXT, Extension::class.java)
             }
 
-            with(configurations) {
-                create(PUBLIC_API_CONFIGURATION).apply {
-                    isTransitive = false
-                    isVisible = false
-                    description = "Public api tracker configuration"
-                }
-            }
-
             with(dependencies) {
                 add("kapt", API_COLLECTOR_REF)
                 add("compileOnly", ANNOTATIONS_REF)
@@ -78,10 +68,14 @@ class TrackerPlugin : Plugin<Project> {
 
             afterEvaluate {
                 val ext = extensions[Extension::class.java]
-                val publicManifestRef = "$group:" +
-                        "${properties["archivesBaseName"]}:" +
-                        "${ext.compareVersion}:" +
-                        "$PUBLIC_API_CLASSIFIER@json"
+                val artifactId = properties["archivesBaseName"]
+                val version = ext.compareVersion
+                val groupPath = group.toString().replace(oldChar = '.', newChar = '/')
+                val publicManifestUrl = "https://raw.githubusercontent.com/aol-public/OneMobileSDK-releases-android/maven/" +
+                                "$groupPath/" +
+                                "$artifactId/" +
+                                "$version/" +
+                                "$artifactId-$version-pubapi.json"
 
                 with(artifacts) {
                     add("archives", manifestFile) { artifact ->
@@ -89,19 +83,10 @@ class TrackerPlugin : Plugin<Project> {
                     }
                 }
 
-                with(dependencies) {
-                    add(PUBLIC_API_CONFIGURATION, publicManifestRef)
-                }
-
                 with(tasks) {
                     create("checkApiChanges", ApiCompareTask::class.java) { task ->
                         with(task) {
-                            oldManifestFile = try {
-                                configurations[PUBLIC_API_CONFIGURATION].resolve().first()
-                            } catch (ignored: ResolveException) {
-                                logger.warn("Could not fetch $publicManifestRef, report will not contain any changes")
-                                manifestFile
-                            }
+                            oldManifestUrl = publicManifestUrl
                             newManifestFile = manifestFile
                             changeReportFile = ext.reportFile
                             implicitNamespaces += ext.implicitNamespaces

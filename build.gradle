@@ -39,7 +39,7 @@ ext {
     LIBRARY_VERSION = GIT_BASED_VERSION
     IS_ANDROID = false
 
-    API_COLLECTOR_VERSION = '1.3'
+    API_COLLECTOR_VERSION = '1.3-SNAPSHOT'
 }
 
 apply plugin: "java-gradle-plugin"

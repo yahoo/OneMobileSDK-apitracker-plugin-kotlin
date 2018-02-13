@@ -61,8 +61,10 @@ object ChangeAggregator {
                 })
             })
 
-    private fun TypeDescriptor.asRemovedClassRecord() = ClassRecord.Removed(
-            modifiers.map { modifier -> Modifier.Removed(modifier) }, name)
+
+    private fun TypeDescriptor.asRemovedClassRecord() =
+            ClassRecord.Removed(modifiers.map { modifier -> Modifier.Removed(modifier) }, name)
+
 
     private fun TypeDescriptor.isNear(another: TypeDescriptor): Boolean {
         val fieldAndMethodsCount = fields.size + methods.size
@@ -70,7 +72,7 @@ object ChangeAggregator {
         val sameFieldsAndMethodsCount = fields.intersect(another.fields).size +
                 methods.intersect(another.methods).size
 
-        return sameFieldsAndMethodsCount.toFloat() / fieldAndMethodsCount > .3f
+        return name == another.name || sameFieldsAndMethodsCount.toFloat() / fieldAndMethodsCount > .3f
     }
 
     private fun createModifiedClassRecord(old: TypeDescriptor, new: TypeDescriptor): ClassRecord.Modified {

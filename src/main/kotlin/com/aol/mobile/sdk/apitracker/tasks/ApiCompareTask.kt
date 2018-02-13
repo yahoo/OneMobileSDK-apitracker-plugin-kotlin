@@ -30,10 +30,11 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import java.net.URL
 
 open class ApiCompareTask : DefaultTask() {
-    @InputFile
-    lateinit var oldManifestFile: File
+    @Input
+    lateinit var oldManifestUrl: String
     @InputFile
     lateinit var newManifestFile: File
     @Input
@@ -44,8 +45,10 @@ open class ApiCompareTask : DefaultTask() {
     @Suppress("unused")
     @TaskAction
     fun comparePublicApi() {
+        val oldManifest = URL(oldManifestUrl).readText().asTypeDescriptorList()
+
         val newManifest = newManifestFile.readText().asTypeDescriptorList()
-        val oldManifest = oldManifestFile.readText().asTypeDescriptorList()
+
         val changeReport = ChangeAggregator.process(oldManifest, newManifest)
 
         changeReportFile.ensureParentExists()

@@ -26,73 +26,82 @@ import com.aol.mobile.sdk.apitracker.dto.*
 object Markdown {
     fun render(implicitNamespaces: List<String> = listOf("java.lang"), apiChanges: List<ClassRecord>): String {
         val markdown = "# Public API changes\n" +
-                apiChanges.joinToString(separator = "\n\n-----\n\n") { it.renderToMd() }
+                apiChanges.sortedBy {
+                    when (it) {
+                        is ClassRecord.Removed -> it.name
+                        is ClassRecord.New -> it.name
+                        is ClassRecord.Modified -> when (it.name) {
+                            is Name.Modified -> it.name.oldName
+                            is Name.Untouched -> it.name.value
+                        }
+                    }
+                }.joinToString(separator = "\n\n-----\n\n") { it.renderToMd() }
 
         return implicitNamespaces.distinct().fold(markdown) { md, namespace ->
             md.replace("$namespace.", "")
         }
     }
 
-    @JvmName("renderModifiersToMd")
-    private fun List<Modifier>.renderToMd() = filter { it !is Modifier.Untouched }
-            .joinToString(separator = " ") { it.renderToMd() }
+    private val List<Modifier>.modsMd
+        get() = filter { it !is Modifier.Untouched }
+                .joinToString(separator = " ") { it.md }
 
-    @JvmName("renderMethodsToMd")
-    private fun List<MethodRecord>.renderToMd() = if (isEmpty()) String() else
-        "#### Methods\n" + joinToString(separator = "\n> ", prefix = "\n> ", postfix = "\n\n") { it.renderToMd() }
+    private val List<MethodRecord>.methodsMd
+        get() = if (isEmpty()) String() else
+            "#### Methods\n" + joinToString(separator = "\n\n> ", prefix = "\n\n> ", postfix = "\n\n") { it.md }
 
-    @JvmName("renderFieldsToMd")
-    private fun List<PropertyRecord>.renderToMd() = if (isEmpty()) String() else
-        "#### Fields\n" + joinToString(separator = "\n> ", prefix = "\n> ", postfix = "\n\n") { it.renderToMd() }
+    private val List<PropertyRecord>.propsMd
+        get() = if (isEmpty()) String() else
+            "#### Fields\n" + joinToString(separator = "\n\n> ", prefix = "\n\n> ", postfix = "\n\n") { it.md }
 
-    private fun Modifier.renderToMd() = when (this) {
-        is Modifier.New -> "*$name*"
-        is Modifier.Removed -> "~~$name~~"
-        is Modifier.Untouched -> name
-    }
-
-    private fun Name.renderToMd() = when (this) {
-        is Name.Modified -> "~~$oldName~~`$newName`"
-        is Name.Untouched -> value
-    }
-
-    private fun PropertyRecord.renderToMd() = when (this) {
-        is PropertyRecord.New -> "*$name*:`$type`"
-        is PropertyRecord.Removed -> "~~$name:$type~~"
-    }
-
-    private fun MethodRecord.renderToMd() = when (this) {
-        is MethodRecord.New -> {
-            val params = args.joinToString { it.renderToMd() }
-            "$name($params):`$type`"
+    private val Modifier.md
+        get() = when (this) {
+            is Modifier.New -> "*$name*"
+            is Modifier.Removed -> name
+            is Modifier.Untouched -> name
         }
 
-        is MethodRecord.Removed -> {
-            val params = args.joinToString { it.renderToMd() }
-            "~~$name($params):$type~~"
+    private val Name.md
+        get() = when (this) {
+            is Name.Modified -> "~~$oldName~~ -> *$newName*"
+            is Name.Untouched -> value
         }
-    }
+
+    private val PropertyRecord.md
+        get() = when (this) {
+            is PropertyRecord.New -> "*$name*: **$type**"
+            is PropertyRecord.Removed -> "~~$name: $type~~"
+        }
+
+    private val PropertyRecord.rawMd
+        get() = when (this) {
+            is PropertyRecord.New -> "$name: $type"
+            is PropertyRecord.Removed -> "$name: $type"
+        }
+
+    private val MethodRecord.New.argsMd
+        get() = args.joinToString { it.md }
+
+    private val MethodRecord.Removed.argsMd
+        get() = args.joinToString { it.rawMd }
+
+    private val MethodRecord.md
+        get() = when (this) {
+            is MethodRecord.New -> "$name($argsMd): **$type**"
+            is MethodRecord.Removed -> "~~$name($argsMd): $type~~"
+        }
 
     private fun ClassRecord.renderToMd() = when (this) {
-        is ClassRecord.Removed -> "### ~~${modifiers.renderToMd()} $name~~\n"
-        is ClassRecord.New -> {
-            val modifiers = modifiers.renderToMd()
-            val fields = properties.renderToMd()
-            val methods = methods.renderToMd()
+        is ClassRecord.Removed -> "### REMOVED: ~~$name~~\n"
 
-            """|### NEW: $modifiers $name
-               |$fields
-               |$methods""".trimMargin()
-        }
-        is ClassRecord.Modified -> {
-            val modifiers = modifiers.renderToMd()
-            val name = name.renderToMd()
-            val fields = properties.renderToMd()
-            val methods = methods.renderToMd()
+        is ClassRecord.New -> """
+                |### NEW: ${modifiers.modsMd} $name
+                |${properties.propsMd}
+                |${methods.methodsMd}""".trimMargin()
 
-            """|### $modifiers $name
-               |$fields
-               |$methods""".trimMargin()
-        }
+        is ClassRecord.Modified -> """
+                |### CHANGED: ${modifiers.modsMd} ${name.md}
+                |${properties.propsMd}
+                |${methods.methodsMd}""".trimMargin()
     }
 }
