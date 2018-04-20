@@ -9,7 +9,7 @@ import com.aol.mobile.sdk.apitracker.dto.*
 
 
 object Markdown {
-    fun render(implicitNamespaces: List<String> = listOf("java.lang"), apiChanges: List<ClassRecord>): String {
+    fun render(implicitNamespaces: List<String>, apiChanges: List<ClassRecord>): String {
         val markdown = "# Public API changes\n" +
                 apiChanges.sortedBy {
                     when (it) {

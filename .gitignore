@@ -40,4 +40,6 @@ proguard/
 # Android Studio captures folder
 captures/
 *.DS_Store
-.idea/inspectionProfiles/
+/.idea/inspectionProfiles/
+/.idea/codeStyles/
+/.idea/caches/
