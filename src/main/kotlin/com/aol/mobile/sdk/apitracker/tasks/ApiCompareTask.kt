@@ -5,6 +5,7 @@
 
 package com.aol.mobile.sdk.apitracker.tasks
 
+import com.aol.mobile.sdk.apitracker.dto.TypeDescriptor
 import com.aol.mobile.sdk.apitracker.dto.asTypeDescriptorList
 import com.aol.mobile.sdk.apitracker.utils.ChangeAggregator
 import com.aol.mobile.sdk.apitracker.utils.Markdown
@@ -27,10 +28,16 @@ open class ApiCompareTask : DefaultTask() {
     @OutputFile
     lateinit var changeReportFile: File
 
-    @Suppress("unused")
     @TaskAction
     fun comparePublicApi() {
-        val oldManifest = URL(oldManifestUrl).readText().asTypeDescriptorList()
+
+        val oldManifest: List<TypeDescriptor>
+        try {
+            oldManifest = URL(oldManifestUrl).readText().asTypeDescriptorList()
+        } catch (e: Exception) {
+            project.delete(changeReportFile)
+            return
+        }
 
         val newManifest = newManifestFile.readText().asTypeDescriptorList()
 
