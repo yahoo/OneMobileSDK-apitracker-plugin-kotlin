@@ -5,8 +5,8 @@
 
 package com.aol.mobile.sdk.cilib
 
-
 import com.android.build.gradle.internal.dsl.AnnotationProcessorOptions
+import com.android.build.gradle.tasks.factory.AndroidJavaCompile
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.BUILD_PATH_KEY
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.PUBLIC_API_FILENAME
 import com.aol.mobile.sdk.cilib.task.ApiCheckTask
@@ -20,7 +20,6 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.external.javadoc.JavadocOfflineLink
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
-
 
 class AndroidCiLibrary : Plugin<Project> {
     companion object {
@@ -168,7 +167,7 @@ class AndroidCiLibrary : Plugin<Project> {
             android.libraryVariants.all { variant ->
                 variant.apply {
                     val artifactDir = mkdir("$buildDir/artifacts/$dirName")
-                    
+
                     (javaCompileOptions.annotationProcessorOptions as AnnotationProcessorOptions)
                             .argument(BUILD_PATH_KEY, artifactDir.absolutePath)
 
@@ -205,11 +204,13 @@ class AndroidCiLibrary : Plugin<Project> {
             android.libraryVariants.all { variant ->
                 variant.apply {
                     val genJavadocTask = task("generate${name.capitalize()}Javadoc", Javadoc::class) {
-                        dependsOn(javaCompiler)
+                        val javaCompile = javaCompiler as AndroidJavaCompile
+                        dependsOn(javaCompile)
 
                         title = "Javadoc for $flavorName flavor"
-                        classpath = javaCompiler.inputs.files
-                        source(variant.sourceSets.asReversed().flatMap { sp -> (sp.javaDirectories + sp.resourcesDirectories) })
+                        classpath = files(javaCompile.classpath, project.android.bootClasspath)
+                        source = javaCompile.source
+                        isFailOnError = false
 
                         (options as StandardJavadocDocletOptions).apply {
                             doclet = "ch.raffael.doclets.pegdown.PegdownDoclet"
@@ -226,6 +227,8 @@ class AndroidCiLibrary : Plugin<Project> {
                             addStringOption("enable-auto-highlight")
                             addStringOption("quiet")
                         }
+
+                        exclude("**/R.java")
                     }
 
                     task("jar${name.capitalize()}Javadoc", Jar::class) {
