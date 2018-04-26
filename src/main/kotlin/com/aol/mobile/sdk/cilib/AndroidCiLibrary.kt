@@ -167,8 +167,8 @@ class AndroidCiLibrary : Plugin<Project> {
         project.config {
             android.libraryVariants.all { variant ->
                 variant.apply {
-                    val artifactDir = file("$buildDir/artifacts/$dirName")
-
+                    val artifactDir = mkdir("$buildDir/artifacts/$dirName")
+                    
                     (javaCompileOptions.annotationProcessorOptions as AnnotationProcessorOptions)
                             .argument(BUILD_PATH_KEY, artifactDir.absolutePath)
 
