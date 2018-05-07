@@ -28,3 +28,8 @@ fun <T : Any> Any.delegateClosureOf(action: T.() -> Unit) = object : Closure<T>(
     @Suppress("unused") // to be called dynamically by Groovy
     fun doCall() = (Cast.uncheckedCast<T>(delegate)).action()
 }
+
+fun <T : Any, V : Any> Any.closureOf(action: T.() -> V?) = object : Closure<V?>(this, this) {
+    @Suppress("unused") // to be called dynamically by Groovy
+    fun doCall(it: T): V? = it.action()
+}
