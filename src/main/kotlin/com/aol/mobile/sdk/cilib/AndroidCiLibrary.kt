@@ -20,6 +20,7 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.external.javadoc.JavadocOfflineLink
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
+import java.io.File
 
 class AndroidCiLibrary : Plugin<Project> {
     companion object {
@@ -31,6 +32,8 @@ class AndroidCiLibrary : Plugin<Project> {
 
     private lateinit var libraryVersion: String
     private lateinit var previousLibraryVersion: String
+    private lateinit var artifactDir: File
+    private val isOnCi = System.getenv("CI") != null
 
     private fun calculateVersions(project: Project) {
         with(project) {
@@ -66,6 +69,7 @@ class AndroidCiLibrary : Plugin<Project> {
                 apply("kotlin-kapt")
                 apply("digital.wup.android-maven-publish")
                 apply("org.ajoberstar.git-publish")
+                apply("com.selesse.git.changelog")
             }
 
             configurations.apply {
@@ -119,41 +123,55 @@ class AndroidCiLibrary : Plugin<Project> {
                     }
                 }
 
-                testOptions {
-                    it.apply {
-                        unitTests.apply {
-                            isIncludeAndroidResources = true
-                            isReturnDefaultValues = true
+                testOptions.unitTests.apply {
+                    isIncludeAndroidResources = true
+                    isReturnDefaultValues = true
+
+                    all(delegateClosureOf {
+                        testLogging {
+                            it.apply {
+                                events("passed", "skipped", "failed", "standardOut", "standardError")
+                                showStandardStreams = true
+                            }
+                        }
+                    })
+                }
+
+
+                val defaultProguardFile = getDefaultProguardFile("proguard-android-optimize.txt")
+
+                buildTypes.apply {
+                    getByName("release") {
+                        it.isMinifyEnabled = true
+                        it.isUseProguard = true
+                    }
+
+                    all { buildType ->
+                        val buildTypeName = buildType.name.toLowerCase()
+                        val apiProguardFile = file("$artifactDir/proguard-classes-$buildTypeName.pro")
+
+                        buildType.apply {
+                            proguardFiles(defaultProguardFile, "proguard-rules.pro", apiProguardFile)
+                            testProguardFiles(defaultProguardFile, "proguard-rules.pro", apiProguardFile)
+                            consumerProguardFiles("proguard-rules.pro", apiProguardFile)
                         }
 
-                        unitTests.all(delegateClosureOf {
-                            testLogging {
+                        if (buildTypeName == "release") {
+                            productFlavors.all {
+                                buildType.proguardFiles.clear()
+                                buildType.testProguardFiles.clear()
+                                buildType.consumerProguardFiles.clear()
+
                                 it.apply {
-                                    events("passed", "skipped", "failed", "standardOut", "standardError")
-                                    showStandardStreams = true
+                                    val flavorName = name.toLowerCase()
+                                    val flavoredProguardFile = file("$artifactDir/proguard-classes-$flavorName$buildTypeName.pro")
+
+                                    proguardFiles(defaultProguardFile, "proguard-rules.pro", flavoredProguardFile)
+                                    testProguardFiles(defaultProguardFile, "proguard-rules.pro", flavoredProguardFile)
+                                    consumerProguardFiles("proguard-rules.pro", flavoredProguardFile)
                                 }
                             }
-                        })
-                    }
-                }
-
-                buildTypes {
-                    it.apply {
-                        getByName("release") {
-                            it.apply {
-                                isMinifyEnabled = true
-                                isUseProguard = true
-                            }
                         }
-                    }
-                }
-
-                productFlavors.all {
-                    it.apply {
-                        val defaultProguardFile = getDefaultProguardFile("proguard-android-optimize.txt")
-                        proguardFiles(defaultProguardFile, "proguard-rules.pro", "proguard-classes-${name.toLowerCase()}.pro")
-                        testProguardFiles(defaultProguardFile, "proguard-rules.pro", "proguard-classes-${name.toLowerCase()}.pro")
-                        consumerProguardFiles("proguard-rules.pro", "proguard-classes-${name.toLowerCase()}.pro")
                     }
                 }
 
@@ -166,20 +184,17 @@ class AndroidCiLibrary : Plugin<Project> {
         project.config {
             android.libraryVariants.all { variant ->
                 variant.apply {
-                    val artifactDir = mkdir("$buildDir/artifacts/$dirName")
-
                     (javaCompileOptions.annotationProcessorOptions as AnnotationProcessorOptions)
-                            .argument(BUILD_PATH_KEY, artifactDir.absolutePath)
+                            .argument(BUILD_PATH_KEY, mkdir("$artifactDir/$dirName/").absolutePath)
 
                     val genProguardTask = task("genApiProguard${name.capitalize()}", ProguardGenTask::class) {
                         dependsOn(javaCompiler)
-                        manifestFile = file("$artifactDir/$PUBLIC_API_FILENAME")
-                        proguardFile = file("$projectDir/proguard-classes-${flavorName.toLowerCase()}.pro")
+                        manifestFile = file("$artifactDir/$dirName/$PUBLIC_API_FILENAME")
+                        proguardFile = file("$artifactDir/proguard-classes-${variant.name.toLowerCase()}.pro")
                     }
 
                     val checkApiTask = task("checkApiChanges${name.capitalize()}", ApiCheckTask::class) {
                         dependsOn(javaCompiler)
-
                         oldManifestUrl = "https://raw.githubusercontent.com/${androidCi.githubRepo.get()}/${androidCi.githubBranch.get()}/" +
                                 "${androidCi.groupPath}/" +
                                 "${androidCi.artifactId(variant)}/" +
@@ -188,12 +203,11 @@ class AndroidCiLibrary : Plugin<Project> {
 
                         newManifestFile = genProguardTask.manifestFile
                         implicitNamespaces = androidCi.apiTrimNamespaces
-                        changeReportFile = file("$buildDir/maven/API CHANGES/${androidCi.artifactId(variant)}/$previousLibraryVersion to $libraryVersion.md")
+                        changeReportFile = file("${rootProject.buildDir}/maven/API CHANGES/${androidCi.artifactId(variant)}/$previousLibraryVersion to $libraryVersion.md")
                     }
 
                     tasks.getByName("publish").dependsOn(checkApiTask)
-
-                    javaCompiler.finalizedBy(genProguardTask)
+                    tasks.getByName("merge${variant.name.capitalize()}ConsumerProguardFiles").dependsOn(genProguardTask)
                 }
             }
         }
@@ -227,19 +241,18 @@ class AndroidCiLibrary : Plugin<Project> {
                             addStringOption("enable-auto-highlight")
                             addStringOption("quiet")
                         }
-
-                        exclude("**/R.java")
                     }
 
                     task("jar${name.capitalize()}Javadoc", Jar::class) {
                         classifier = "javadoc"
-                        destinationDir = file("$buildDir/artifacts/$dirName")
+                        destinationDir = file("$artifactDir/$dirName")
                         from(genJavadocTask.outputs.files)
+                        exclude("**/R.html", "**/R.*.html")
                     }
 
                     task("jar${name.capitalize()}Sources", Jar::class) {
                         classifier = "sources"
-                        destinationDir = file("$buildDir/artifacts/$dirName")
+                        destinationDir = file("$artifactDir/$dirName")
                         from(sourceSets.flatMap { it.javaDirectories })
                     }
                 }
@@ -249,34 +262,33 @@ class AndroidCiLibrary : Plugin<Project> {
 
     private fun configureLocalMavenPublishing(project: Project) {
         project.config {
-            publishing.apply {
-                publications.apply {
-                    android.libraryVariants.all { variant ->
-                        val genProguardTask = tasks.getByName("genApiProguard${variant.name.capitalize()}") as ProguardGenTask
 
-                        create("maven${variant.name.capitalize()}Aar", MavenPublication::class.java) { publication ->
-                            publication.apply {
-                                groupId = androidCi.groupId.get()
-                                version = libraryVersion
-                                artifactId = androidCi.artifactId(variant)
+            android.libraryVariants.all { variant ->
+                val genProguardTask = tasks.getByName("genApiProguard${variant.name.capitalize()}") as ProguardGenTask
 
-                                from(components.findByName("android${variant.name.capitalize()}"))
+                publishing.publications.create("maven${variant.name.capitalize()}Aar", MavenPublication::class.java) {
+                    it.apply {
+                        groupId = androidCi.groupId.get()
+                        version = libraryVersion
+                        artifactId = androidCi.artifactId(variant)
 
-                                artifact(tasks.getByName("jar${variant.name.capitalize()}Sources"))
-                                artifact(tasks.getByName("jar${variant.name.capitalize()}Javadoc"))
-                                artifact(genProguardTask.manifestFile) {
-                                    with(it) {
-                                        classifier = "pubapi"
-                                        extension = "json"
-                                    }
-                                }
+                        from(components.findByName("android${variant.name.capitalize()}"))
+
+                        artifact(tasks.getByName("jar${variant.name.capitalize()}Sources"))
+                        artifact(tasks.getByName("jar${variant.name.capitalize()}Javadoc"))
+                        artifact(genProguardTask.manifestFile) {
+                            with(it) {
+                                classifier = "pubapi"
+                                extension = "json"
                             }
                         }
                     }
                 }
+            }
 
+            publishing.apply {
                 repositories.apply {
-                    maven { it.setUrl("$buildDir/maven/") }
+                    maven { it.setUrl("${rootProject.buildDir}/maven/") }
                 }
             }
 
@@ -289,7 +301,7 @@ class AndroidCiLibrary : Plugin<Project> {
             gitPublish.apply {
                 repoUri = "https://github.com/${androidCi.githubRepo.get()}.git"
                 branch = androidCi.githubBranch.get()
-                repoDir = file("$buildDir/maven")
+                repoDir = file("${rootProject.buildDir}/maven")
 
                 preserve { it.includes.add("**/*") }
 
@@ -298,11 +310,38 @@ class AndroidCiLibrary : Plugin<Project> {
                 }
             }
 
-            tasks.getByName("gitPublishCommit").dependsOn.add("publish")
+            tasks.getByName("gitPublishCommit").dependsOn("publish")
+        }
+    }
+
+    private fun configureChangelogGeneration(project: Project) {
+        project.config {
+            changelog.apply {
+                val artifactId = androidCi.artifactId.get()
+
+                title = "# OneMobile SDK ${artifactId.capitalize()} release notes"
+                outputDirectory = file("${rootProject.buildDir}/maven")
+                fileName = "${artifactId.toUpperCase()} CHANGELOG.md"
+
+                commitFormat = "%s"
+
+                markdownConvention.apply {
+                    commitFormat = "- %s"
+                }
+
+                includeLines = closureOf<String, Boolean> {
+                    !contains("Merge pull request #")
+                }
+            }
+
+            tasks.getByName("generateChangelog").dependsOn("gitPublishReset")
+            tasks.getByName("gitPublishCommit").dependsOn("generateChangelog")
         }
     }
 
     override fun apply(project: Project) {
+        artifactDir = project.mkdir("${project.buildDir}/androidCiPlugin/")
+
         calculateVersions(project)
 
         project.extensions.create("androidCi", AndroidCiExtension::class.java, project)
@@ -311,10 +350,13 @@ class AndroidCiLibrary : Plugin<Project> {
         configureAndroid(project)
         configureApiTracking(project)
 
+        if (!isOnCi) return
+
         project.afterEvaluate { evaluatedProject ->
             configureLibraryArtifacts(evaluatedProject)
             configureLocalMavenPublishing(evaluatedProject)
             configureGithubPublishing(evaluatedProject)
+            configureChangelogGeneration(evaluatedProject)
         }
     }
 }

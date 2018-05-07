@@ -7,6 +7,7 @@ package com.aol.mobile.sdk.cilib.utils
 
 import com.android.build.gradle.LibraryExtension
 import com.aol.mobile.sdk.cilib.AndroidCiExtension
+import com.selesse.gradle.git.changelog.GitChangelogExtension
 import org.ajoberstar.gradle.git.publish.GitPublishExtension
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -18,6 +19,8 @@ fun <T : Task> Project.task(name: String, type: KClass<T>, action: T.() -> Unit)
 fun Project.config(action: Project.() -> Unit) = action()
 
 val Project.android: LibraryExtension get() = extensions.getByType(LibraryExtension::class.java)
+
+val Project.changelog: GitChangelogExtension get() = extensions.getByType(GitChangelogExtension::class.java)
 
 val Project.androidCi: AndroidCiExtension get() = extensions.getByType(AndroidCiExtension::class.java)
 

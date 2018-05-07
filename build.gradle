@@ -41,8 +41,9 @@ repositories {
 
 dependencies {
     compileOnly gradleApi()
-    implementation "com.android.tools.build:gradle:3.1.2"
     implementation "com.aol.one.publishers.android:api-collector:$API_COLLECTOR_VERSION"
+    implementation "com.selesse:gradle-git-changelog:0.3.0"
+    implementation "com.android.tools.build:gradle:3.1.2"
     implementation "org.ajoberstar:gradle-git-publish:0.3.3"
     implementation "digital.wup:android-maven-publish:3.3.0"
 
