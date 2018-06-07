@@ -57,10 +57,10 @@ class TrackerPlugin : Plugin<Project> {
                 val version = ext.compareVersion
                 val groupPath = group.toString().replace(oldChar = '.', newChar = '/')
                 val publicManifestUrl = "https://raw.githubusercontent.com/aol-public/OneMobileSDK-releases-android/maven/" +
-                                "$groupPath/" +
-                                "$artifactId/" +
-                                "$version/" +
-                                "$artifactId-$version-pubapi.json"
+                        "$groupPath/" +
+                        "$artifactId/" +
+                        "$version/" +
+                        "$artifactId-$version-pubapi.json"
 
                 with(artifacts) {
                     add("archives", manifestFile) { artifact ->
