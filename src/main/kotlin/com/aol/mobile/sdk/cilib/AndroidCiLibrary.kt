@@ -10,6 +10,7 @@ import com.android.build.gradle.tasks.factory.AndroidJavaCompile
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.BUILD_PATH_KEY
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.PUBLIC_API_FILENAME
 import com.aol.mobile.sdk.cilib.task.ApiCheckTask
+import com.aol.mobile.sdk.cilib.task.DexMetricsTask
 import com.aol.mobile.sdk.cilib.task.ProguardGenTask
 import com.aol.mobile.sdk.cilib.utils.*
 import org.gradle.api.JavaVersion
@@ -100,6 +101,9 @@ class AndroidCiLibrary : Plugin<Project> {
                     it.apply {
                         minSdkVersion(minAndroidApi)
                         targetSdkVersion(targetAndroidApi)
+
+                        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+                        versionCode = 1
                         version = libraryVersion
                         versionName = libraryVersion
                     }
@@ -175,8 +179,6 @@ class AndroidCiLibrary : Plugin<Project> {
                         }
                     }
                 }
-
-                variantFilter { it.setIgnore(!it.buildType.name.contains("release")) }
             }
         }
     }
@@ -263,7 +265,6 @@ class AndroidCiLibrary : Plugin<Project> {
 
     private fun configureLocalMavenPublishing(project: Project) {
         project.config {
-
             android.libraryVariants.all { variant ->
                 val genProguardTask = tasks.getByName("genApiProguard${variant.name.capitalize()}") as ProguardGenTask
 
@@ -293,7 +294,9 @@ class AndroidCiLibrary : Plugin<Project> {
                 }
             }
 
-            tasks.getByName("publish").dependsOn.addAll(listOf("assembleRelease", "gitPublishReset"))
+            if (isOnCi) {
+                tasks.getByName("publish").dependsOn.addAll(listOf("assembleRelease", "gitPublishReset"))
+            }
         }
     }
 
@@ -311,7 +314,9 @@ class AndroidCiLibrary : Plugin<Project> {
                 }
             }
 
-            tasks.getByName("gitPublishCommit").dependsOn("publish")
+            if (isOnCi) {
+                tasks.getByName("gitPublishCommit").dependsOn("publish")
+            }
         }
     }
 
@@ -320,7 +325,7 @@ class AndroidCiLibrary : Plugin<Project> {
             changelog.apply {
                 val artifactId = androidCi.artifactId.get()
 
-                title = "# OneMobile SDK ${artifactId.capitalize()} release notes"
+                title = "# O2 ${artifactId.capitalize()} release notes"
                 outputDirectory = file("${rootProject.buildDir}/maven")
                 fileName = "${artifactId.toUpperCase()} CHANGELOG.md"
 
@@ -335,8 +340,30 @@ class AndroidCiLibrary : Plugin<Project> {
                 }
             }
 
-            tasks.getByName("generateChangelog").dependsOn("gitPublishReset")
-            tasks.getByName("gitPublishCommit").dependsOn("generateChangelog")
+            if (isOnCi) {
+                tasks.getByName("generateChangelog").dependsOn("gitPublishReset")
+                tasks.getByName("gitPublishCommit").dependsOn("generateChangelog")
+            }
+        }
+    }
+
+    private fun gatherMethodAndFieldMetrics(project: Project) {
+        project.config {
+            android.libraryVariants.all { variant ->
+                val taskName = "measureDexOf${variant.name.capitalize()}"
+
+                val dexMetricsCount = task(taskName, DexMetricsTask::class) {
+                    aarFile = variant.outputs.map { it.outputFile }.first { it.extension == "aar" }
+                    metricsReportFile = file("${rootProject.buildDir}/maven/DEX COUNT/${androidCi.artifactId(variant)}/${variant.name.toUpperCase()}/STATS for $libraryVersion.md")
+                }
+
+                dexMetricsCount.dependsOn(variant.assemble)
+
+                if (isOnCi) {
+                    dexMetricsCount.dependsOn("gitPublishReset")
+                    tasks.getByName("gitPublishCommit").dependsOn(dexMetricsCount)
+                }
+            }
         }
     }
 
@@ -350,8 +377,7 @@ class AndroidCiLibrary : Plugin<Project> {
         configurePluginsAndDependencies(project)
         configureAndroid(project)
         configureApiTracking(project)
-
-        if (!isOnCi) return
+        gatherMethodAndFieldMetrics(project)
 
         project.afterEvaluate { evaluatedProject ->
             configureLibraryArtifacts(evaluatedProject)

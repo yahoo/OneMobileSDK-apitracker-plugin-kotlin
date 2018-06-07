@@ -25,6 +25,7 @@ ext {
     IS_ANDROID = false
 
     API_COLLECTOR_VERSION = '1.4'
+    kotlin_version = '1.2.41'
 }
 
 apply plugin: "java-gradle-plugin"
@@ -46,9 +47,10 @@ dependencies {
     implementation "com.android.tools.build:gradle:3.1.2"
     implementation "org.ajoberstar:gradle-git-publish:0.3.3"
     implementation "digital.wup:android-maven-publish:3.3.0"
+    implementation "com.jakewharton.dex:dex-method-list:3.1.0"
 
-    implementation "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
+    implementation "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "com.github.salomonbrys.kotson:kotson:2.5.0"
 
     testCompileOnly gradleTestKit()
