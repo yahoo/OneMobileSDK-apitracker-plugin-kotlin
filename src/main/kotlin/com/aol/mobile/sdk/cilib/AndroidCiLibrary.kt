@@ -115,7 +115,7 @@ class AndroidCiLibrary : Plugin<Project> {
 
                 lintOptions {
                     it.apply {
-                        isAbortOnError = true
+                        isAbortOnError = false
                         isShowAll = true
                         isWarningsAsErrors = true
                         isExplainIssues = true
@@ -142,38 +142,36 @@ class AndroidCiLibrary : Plugin<Project> {
                     })
                 }
 
-
-                val defaultProguardFile = getDefaultProguardFile("proguard-android-optimize.txt")
-
                 buildTypes.apply {
                     getByName("release") {
                         it.isMinifyEnabled = true
                         it.isUseProguard = true
                     }
+                }
 
-                    all { buildType ->
+                project.afterEvaluate {
+                    val defaultProguardFile = getDefaultProguardFile("proguard-android-optimize.txt")
+
+                    buildTypes.all { buildType ->
                         val buildTypeName = buildType.name.toLowerCase()
-                        val apiProguardFile = file("$artifactDir/proguard-classes-$buildTypeName.pro")
 
-                        buildType.apply {
-                            proguardFiles(defaultProguardFile, "proguard-rules.pro", apiProguardFile)
-                            testProguardFiles(defaultProguardFile, "proguard-rules.pro", apiProguardFile)
-                            consumerProguardFiles("proguard-rules.pro", apiProguardFile)
-                        }
+                        if (productFlavors.isEmpty()) {
+                            val apiProguardFile = file("$artifactDir/proguard-classes-$buildTypeName.pro")
 
-                        if (buildTypeName == "release") {
-                            productFlavors.all {
-                                buildType.proguardFiles.clear()
-                                buildType.testProguardFiles.clear()
-                                buildType.consumerProguardFiles.clear()
-
-                                it.apply {
+                            buildType.apply {
+                                proguardFiles(defaultProguardFile, "proguard-rules.pro", apiProguardFile)
+                                testProguardFiles(defaultProguardFile, "proguard-rules.pro", apiProguardFile)
+                                consumerProguardFiles(apiProguardFile)
+                            }
+                        } else {
+                            productFlavors.all { flavor ->
+                                flavor.apply {
                                     val flavorName = name.toLowerCase()
                                     val flavoredProguardFile = file("$artifactDir/proguard-classes-$flavorName$buildTypeName.pro")
 
                                     proguardFiles(defaultProguardFile, "proguard-rules.pro", flavoredProguardFile)
                                     testProguardFiles(defaultProguardFile, "proguard-rules.pro", flavoredProguardFile)
-                                    consumerProguardFiles("proguard-rules.pro", flavoredProguardFile)
+                                    consumerProguardFile(flavoredProguardFile)
                                 }
                             }
                         }
@@ -381,8 +379,10 @@ class AndroidCiLibrary : Plugin<Project> {
 
         project.afterEvaluate { evaluatedProject ->
             configureLibraryArtifacts(evaluatedProject)
-            configureLocalMavenPublishing(evaluatedProject)
-            configureGithubPublishing(evaluatedProject)
+            if (isOnCi) {
+                configureLocalMavenPublishing(evaluatedProject)
+                configureGithubPublishing(evaluatedProject)
+            }
             configureChangelogGeneration(evaluatedProject)
         }
     }
