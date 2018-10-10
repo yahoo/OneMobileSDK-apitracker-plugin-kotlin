@@ -46,7 +46,7 @@ class AndroidCiLibrary : Plugin<Project> {
             val versionParts = gitTag.split(".")
             val nextVersion = when (versionParts.size) {
                 0, 1 -> "1.0"
-                else -> versionParts.mapIndexed { index: Int, part: String ->
+                else -> versionParts.asSequence().mapIndexed { index: Int, part: String ->
                     if (index == versionParts.lastIndex)
                         "${part.toInt() + 1}"
                     else
@@ -65,8 +65,13 @@ class AndroidCiLibrary : Plugin<Project> {
     private fun configurePluginsAndDependencies(project: Project) {
         project.config {
             plugins.apply {
-                apply("com.android.library")
-                apply("kotlin-android")
+                if (androidCi.isNonAndroidLib.get() == java.lang.Boolean(true)) {
+                    apply("kotlin")
+                } else {
+                    apply("com.android.library")
+                    apply("kotlin-android")
+                }
+
                 apply("kotlin-kapt")
                 apply("digital.wup.android-maven-publish")
                 apply("org.ajoberstar.git-publish")
@@ -276,8 +281,8 @@ class AndroidCiLibrary : Plugin<Project> {
 
                         artifact(tasks.getByName("jar${variant.name.capitalize()}Sources"))
                         artifact(tasks.getByName("jar${variant.name.capitalize()}Javadoc"))
-                        artifact(genProguardTask.manifestFile) {
-                            with(it) {
+                        artifact(genProguardTask.manifestFile) { artifact ->
+                            with(artifact) {
                                 classifier = "pubapi"
                                 extension = "json"
                             }

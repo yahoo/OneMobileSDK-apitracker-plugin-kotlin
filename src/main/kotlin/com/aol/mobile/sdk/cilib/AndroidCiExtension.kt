@@ -13,6 +13,9 @@ import kotlin.String
 
 
 open class AndroidCiExtension(val project: Project) {
+    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+    val isNonAndroidLib: Property<java.lang.Boolean> = project.objects.property(java.lang.Boolean::class.java).apply { set(java.lang.Boolean(false)) }
+
     /**
      * GitHub repo for publishing, must be in format `organization/repository`
      */
