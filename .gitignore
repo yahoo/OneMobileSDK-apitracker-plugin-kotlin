@@ -14,10 +14,7 @@ gen/
 out/
 
 # IntelliJ
-.idea/*.xml
-.idea/libraries
-.idea/modules
-/.idea/dictionaries/*.xml
+.idea/*
 *.iml
 
 # Gradle files

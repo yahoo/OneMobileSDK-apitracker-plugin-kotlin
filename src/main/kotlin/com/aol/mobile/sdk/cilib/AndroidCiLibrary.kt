@@ -27,7 +27,7 @@ class AndroidCiLibrary : Plugin<Project> {
     companion object {
         private const val apiCollectorVersion = "1.4"
         private const val minAndroidApi = 16
-        private const val compileAndroidApi = 27
+        private const val compileAndroidApi = 28
         private const val targetAndroidApi = compileAndroidApi
     }
 
@@ -147,16 +147,7 @@ class AndroidCiLibrary : Plugin<Project> {
                     })
                 }
 
-                buildTypes.apply {
-                    getByName("release") {
-                        it.isMinifyEnabled = true
-                        it.isUseProguard = true
-                    }
-                }
-
                 project.afterEvaluate {
-                    val defaultProguardFile = getDefaultProguardFile("proguard-android-optimize.txt")
-
                     buildTypes.all { buildType ->
                         val buildTypeName = buildType.name.toLowerCase()
 
@@ -164,8 +155,6 @@ class AndroidCiLibrary : Plugin<Project> {
                             val apiProguardFile = file("$artifactDir/proguard-classes-$buildTypeName.pro")
 
                             buildType.apply {
-                                proguardFiles(defaultProguardFile, "proguard-rules.pro", apiProguardFile)
-                                testProguardFiles(defaultProguardFile, "proguard-rules.pro", apiProguardFile)
                                 consumerProguardFiles(apiProguardFile)
                             }
                         } else {
@@ -174,8 +163,6 @@ class AndroidCiLibrary : Plugin<Project> {
                                     val flavorName = name.toLowerCase()
                                     val flavoredProguardFile = file("$artifactDir/proguard-classes-$flavorName$buildTypeName.pro")
 
-                                    proguardFiles(defaultProguardFile, "proguard-rules.pro", flavoredProguardFile)
-                                    testProguardFiles(defaultProguardFile, "proguard-rules.pro", flavoredProguardFile)
                                     consumerProguardFile(flavoredProguardFile)
                                 }
                             }
