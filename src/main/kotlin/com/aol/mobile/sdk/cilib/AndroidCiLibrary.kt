@@ -22,6 +22,7 @@ import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.external.javadoc.JavadocOfflineLink
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
 import java.io.File
+import java.io.FileNotFoundException
 
 class AndroidCiLibrary : Plugin<Project> {
     companion object {
@@ -155,7 +156,11 @@ class AndroidCiLibrary : Plugin<Project> {
                             val apiProguardFile = file("$artifactDir/proguard-classes-$buildTypeName.pro")
 
                             buildType.apply {
-                                consumerProguardFiles(apiProguardFile)
+                                if (apiProguardFile.exists()) {
+                                    consumerProguardFiles(apiProguardFile)
+                                } else {
+                                    throw FileNotFoundException("$apiProguardFile Doesn't exists!")
+                                }
                             }
                         } else {
                             productFlavors.all { flavor ->
@@ -163,7 +168,11 @@ class AndroidCiLibrary : Plugin<Project> {
                                     val flavorName = name.toLowerCase()
                                     val flavoredProguardFile = file("$artifactDir/proguard-classes-$flavorName$buildTypeName.pro")
 
-                                    consumerProguardFile(flavoredProguardFile)
+                                    if (flavoredProguardFile.exists()) {
+                                        consumerProguardFile(flavoredProguardFile)
+                                    } else {
+                                        throw FileNotFoundException("$flavoredProguardFile Doesn't exists!")
+                                    }
                                 }
                             }
                         }
