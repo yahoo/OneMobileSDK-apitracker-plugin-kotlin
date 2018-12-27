@@ -159,7 +159,7 @@ class AndroidCiLibrary : Plugin<Project> {
                                 if (apiProguardFile.exists()) {
                                     consumerProguardFiles(apiProguardFile)
                                 } else {
-                                    throw FileNotFoundException("$apiProguardFile Doesn't exists!")
+                                    throw FileNotFoundException("$apiProguardFile Doesn't exist!")
                                 }
                             }
                         } else {
@@ -171,7 +171,7 @@ class AndroidCiLibrary : Plugin<Project> {
                                     if (flavoredProguardFile.exists()) {
                                         consumerProguardFile(flavoredProguardFile)
                                     } else {
-                                        throw FileNotFoundException("$flavoredProguardFile Doesn't exists!")
+                                        throw FileNotFoundException("$flavoredProguardFile Doesn't exist!")
                                     }
                                 }
                             }
