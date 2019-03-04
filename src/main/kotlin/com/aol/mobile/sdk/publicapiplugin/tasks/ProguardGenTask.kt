@@ -1,12 +1,7 @@
-/*
- * Copyright 2018, Oath Inc.
- * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
- */
+package com.aol.mobile.sdk.publicapiplugin.tasks
 
-package com.aol.mobile.sdk.cilib.task
-
-import com.aol.mobile.sdk.apitracker.dto.asTypeDescriptorList
-import com.aol.mobile.sdk.apitracker.utils.Proguard
+import com.aol.mobile.sdk.publicapiplugin.dto.asTypeDescriptorList
+import com.aol.mobile.sdk.publicapiplugin.utils.Proguard
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile

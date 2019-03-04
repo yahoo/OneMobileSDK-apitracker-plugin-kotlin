@@ -1,9 +1,4 @@
-/*
- * Copyright 2018, Oath Inc.
- * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
- */
-
-package com.aol.mobile.sdk.apitracker.dto
+package com.aol.mobile.sdk.publicapiplugin.dto
 
 import com.github.salomonbrys.kotson.fromJson
 import com.google.gson.Gson
