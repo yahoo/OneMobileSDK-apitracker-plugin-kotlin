@@ -3,11 +3,11 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.cilib.task
+package com.aol.mobile.sdk.cilib.task
 
-import com.verizonmedia.mobile.publicapi.apitracker.dto.asTypeDescriptorList
-import com.verizonmedia.mobile.publicapi.apitracker.utils.ChangeAggregator
-import com.verizonmedia.mobile.publicapi.apitracker.utils.Markdown
+import com.aol.mobile.sdk.apitracker.dto.asTypeDescriptorList
+import com.aol.mobile.sdk.apitracker.utils.ChangeAggregator
+import com.aol.mobile.sdk.apitracker.utils.Markdown
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Input

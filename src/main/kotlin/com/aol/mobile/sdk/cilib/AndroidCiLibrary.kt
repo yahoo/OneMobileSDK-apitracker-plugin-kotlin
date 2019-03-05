@@ -3,15 +3,16 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.cilib
+package com.aol.mobile.sdk.cilib
 
 import com.android.build.gradle.internal.dsl.AnnotationProcessorOptions
 import com.android.build.gradle.tasks.AndroidJavaCompile
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.BUILD_PATH_KEY
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.PUBLIC_API_FILENAME
-import com.verizonmedia.mobile.publicapi.cilib.task.ApiCheckTask
-import com.verizonmedia.mobile.publicapi.cilib.task.DexMetricsTask
-import com.verizonmedia.mobile.publicapi.cilib.task.ProguardGenTask
+import com.aol.mobile.sdk.cilib.task.ApiCheckTask
+import com.aol.mobile.sdk.cilib.task.DexMetricsTask
+import com.aol.mobile.sdk.cilib.task.ProguardGenTask
+import com.aol.mobile.sdk.cilib.utils.*
 import com.verizonmedia.mobile.publicapi.cilib.utils.*
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin

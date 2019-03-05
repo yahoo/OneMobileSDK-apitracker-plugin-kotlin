@@ -3,13 +3,13 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.apitracker.tasks
+package com.aol.mobile.sdk.apitracker.tasks
 
-import com.verizonmedia.mobile.publicapi.apitracker.dto.TypeDescriptor
-import com.verizonmedia.mobile.publicapi.apitracker.dto.asTypeDescriptorList
-import com.verizonmedia.mobile.publicapi.apitracker.utils.ChangeAggregator
-import com.verizonmedia.mobile.publicapi.apitracker.utils.Markdown
-import com.verizonmedia.mobile.publicapi.apitracker.utils.ensureParentExists
+import com.aol.mobile.sdk.apitracker.dto.TypeDescriptor
+import com.aol.mobile.sdk.apitracker.dto.asTypeDescriptorList
+import com.aol.mobile.sdk.apitracker.utils.ChangeAggregator
+import com.aol.mobile.sdk.apitracker.utils.Markdown
+import com.aol.mobile.sdk.apitracker.utils.ensureParentExists
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile

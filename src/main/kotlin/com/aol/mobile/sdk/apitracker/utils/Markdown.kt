@@ -3,8 +3,13 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.apitracker.utils
+package com.aol.mobile.sdk.apitracker.utils
 
+import com.aol.mobile.sdk.apitracker.dto.ClassRecord
+import com.aol.mobile.sdk.apitracker.dto.MethodRecord
+import com.aol.mobile.sdk.apitracker.dto.Modifier
+import com.aol.mobile.sdk.apitracker.dto.Name
+import com.aol.mobile.sdk.apitracker.dto.PropertyRecord
 import com.verizonmedia.mobile.publicapi.apitracker.dto.*
 
 

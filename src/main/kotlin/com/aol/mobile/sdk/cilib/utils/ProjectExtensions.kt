@@ -3,10 +3,10 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.cilib.utils
+package com.aol.mobile.sdk.cilib.utils
 
 import com.android.build.gradle.LibraryExtension
-import com.verizonmedia.mobile.publicapi.cilib.AndroidCiExtension
+import com.aol.mobile.sdk.cilib.AndroidCiExtension
 import com.selesse.gradle.git.changelog.GitChangelogExtension
 import org.ajoberstar.gradle.git.publish.GitPublishExtension
 import org.gradle.api.Project

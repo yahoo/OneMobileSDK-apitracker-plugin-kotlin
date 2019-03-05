@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.cilib.utils
+package com.aol.mobile.sdk.cilib.utils
 
 import groovy.lang.Closure
 import org.gradle.internal.Cast

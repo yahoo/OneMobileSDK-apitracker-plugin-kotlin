@@ -3,13 +3,13 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.apitracker
+package com.aol.mobile.sdk.apitracker
 
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.BUILD_PATH_KEY
-import com.verizonmedia.mobile.publicapi.apitracker.tasks.ApiCompareTask
-import com.verizonmedia.mobile.publicapi.apitracker.tasks.ProguardGenerateTask
-import com.verizonmedia.mobile.publicapi.apitracker.utils.get
-import com.verizonmedia.mobile.publicapi.apitracker.utils.manifestFile
+import com.aol.mobile.sdk.apitracker.tasks.ApiCompareTask
+import com.aol.mobile.sdk.apitracker.tasks.ProguardGenerateTask
+import com.aol.mobile.sdk.apitracker.utils.get
+import com.aol.mobile.sdk.apitracker.utils.manifestFile
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.plugin.KaptExtension

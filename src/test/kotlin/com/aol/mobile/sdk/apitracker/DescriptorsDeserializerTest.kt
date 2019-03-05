@@ -5,9 +5,9 @@
 
 package com.aol.mobile.sdk.apitracker
 
-import com.verizonmedia.mobile.publicapi.apitracker.dto.MethodDescriptor
-import com.verizonmedia.mobile.publicapi.apitracker.dto.TypeDescriptor
-import com.verizonmedia.mobile.publicapi.apitracker.dto.asTypeDescriptorList
+import com.aol.mobile.sdk.apitracker.dto.MethodDescriptor
+import com.aol.mobile.sdk.apitracker.dto.TypeDescriptor
+import com.aol.mobile.sdk.apitracker.dto.asTypeDescriptorList
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 

@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.apitracker.utils
+package com.aol.mobile.sdk.apitracker.utils
 
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.PUBLIC_API_FILENAME
 import org.gradle.api.GradleException

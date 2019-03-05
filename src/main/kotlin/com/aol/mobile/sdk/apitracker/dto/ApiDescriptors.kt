@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.apitracker.dto
+package com.aol.mobile.sdk.apitracker.dto
 
 import com.github.salomonbrys.kotson.fromJson
 import com.google.gson.Gson

@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.cilib.task
+package com.aol.mobile.sdk.cilib.task
 
 import com.jakewharton.dex.DexParser
 import org.gradle.api.DefaultTask

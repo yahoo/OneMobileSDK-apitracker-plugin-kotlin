@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.apitracker.dto
+package com.aol.mobile.sdk.apitracker.dto
 
 sealed class ClassRecord(val ordinal: Int) {
     class Removed(val modifiers: List<Modifier.Removed>, val name: String) : ClassRecord(2)

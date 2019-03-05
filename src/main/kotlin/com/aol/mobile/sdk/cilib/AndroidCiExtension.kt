@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
  */
 
-package com.verizonmedia.mobile.publicapi.cilib
+package com.aol.mobile.sdk.cilib
 
 import com.android.build.gradle.api.LibraryVariant
 import org.gradle.api.Project
