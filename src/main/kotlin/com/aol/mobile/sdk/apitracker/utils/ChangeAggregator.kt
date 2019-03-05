@@ -11,7 +11,6 @@ import com.aol.mobile.sdk.apitracker.dto.Modifier
 import com.aol.mobile.sdk.apitracker.dto.Name
 import com.aol.mobile.sdk.apitracker.dto.PropertyRecord
 import com.aol.mobile.sdk.apitracker.dto.TypeDescriptor
-import com.verizonmedia.mobile.publicapi.apitracker.dto.*
 
 object ChangeAggregator {
     fun process(old: List<TypeDescriptor>, new: List<TypeDescriptor>): List<ClassRecord> {

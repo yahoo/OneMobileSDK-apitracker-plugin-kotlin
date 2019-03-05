@@ -6,7 +6,6 @@
 package com.aol.mobile.sdk.cilib
 
 import com.android.build.gradle.internal.dsl.AnnotationProcessorOptions
-import com.android.build.gradle.internal.dsl.ProductFlavor
 import com.android.build.gradle.tasks.AndroidJavaCompile
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.BUILD_PATH_KEY
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.PUBLIC_API_FILENAME
@@ -15,7 +14,6 @@ import com.aol.mobile.sdk.cilib.task.DexMetricsTask
 import com.aol.mobile.sdk.cilib.task.ProguardGenTask
 import com.aol.mobile.sdk.cilib.utils.*
 import org.gradle.api.JavaVersion
-import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.maven.MavenPublication
@@ -108,11 +106,6 @@ class AndroidCiLibrary : Plugin<Project> {
                     it.apply {
                         minSdkVersion(minAndroidApi)
                         targetSdkVersion(targetAndroidApi)
-
-                        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
-                        versionCode = 1
-                        version = libraryVersion
-                        versionName = libraryVersion
                     }
                 }
 

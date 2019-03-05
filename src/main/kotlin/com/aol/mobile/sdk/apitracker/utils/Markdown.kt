@@ -10,8 +10,6 @@ import com.aol.mobile.sdk.apitracker.dto.MethodRecord
 import com.aol.mobile.sdk.apitracker.dto.Modifier
 import com.aol.mobile.sdk.apitracker.dto.Name
 import com.aol.mobile.sdk.apitracker.dto.PropertyRecord
-import com.verizonmedia.mobile.publicapi.apitracker.dto.*
-
 
 object Markdown {
     fun render(implicitNamespaces: List<String>, apiChanges: List<ClassRecord>): String {
