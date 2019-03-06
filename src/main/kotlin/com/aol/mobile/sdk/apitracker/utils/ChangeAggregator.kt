@@ -5,12 +5,7 @@
 
 package com.aol.mobile.sdk.apitracker.utils
 
-import com.aol.mobile.sdk.apitracker.dto.ClassRecord
-import com.aol.mobile.sdk.apitracker.dto.MethodRecord
-import com.aol.mobile.sdk.apitracker.dto.Modifier
-import com.aol.mobile.sdk.apitracker.dto.Name
-import com.aol.mobile.sdk.apitracker.dto.PropertyRecord
-import com.aol.mobile.sdk.apitracker.dto.TypeDescriptor
+import com.aol.mobile.sdk.apitracker.dto.*
 
 object ChangeAggregator {
     fun process(old: List<TypeDescriptor>, new: List<TypeDescriptor>): List<ClassRecord> {

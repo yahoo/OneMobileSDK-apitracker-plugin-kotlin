@@ -106,6 +106,8 @@ class AndroidCiLibrary : Plugin<Project> {
                     it.apply {
                         minSdkVersion(minAndroidApi)
                         targetSdkVersion(targetAndroidApi)
+
+                        version = libraryVersion
                     }
                 }
 
