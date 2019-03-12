@@ -6,7 +6,7 @@
 package com.aol.mobile.sdk.cilib
 
 import com.android.build.gradle.internal.dsl.AnnotationProcessorOptions
-import com.android.build.gradle.tasks.factory.AndroidJavaCompile
+import com.android.build.gradle.tasks.AndroidJavaCompile
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.BUILD_PATH_KEY
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.PUBLIC_API_FILENAME
 import com.aol.mobile.sdk.cilib.task.ApiCheckTask
@@ -98,8 +98,8 @@ class AndroidCiLibrary : Plugin<Project> {
 
                 compileOptions {
                     it.apply {
-                        setSourceCompatibility(JavaVersion.VERSION_1_8)
-                        setTargetCompatibility(JavaVersion.VERSION_1_8)
+                        sourceCompatibility = JavaVersion.VERSION_1_8
+                        targetCompatibility = JavaVersion.VERSION_1_8
                     }
                 }
 
@@ -108,10 +108,7 @@ class AndroidCiLibrary : Plugin<Project> {
                         minSdkVersion(minAndroidApi)
                         targetSdkVersion(targetAndroidApi)
 
-                        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
-                        versionCode = 1
                         version = libraryVersion
-                        versionName = libraryVersion
                     }
                 }
 

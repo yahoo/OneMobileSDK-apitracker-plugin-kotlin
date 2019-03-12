@@ -21,7 +21,7 @@ class DescriptorsDeserializerTest {
                   "public",
                   "final"
                 ],
-                "name": "com.aol.mobile.sdk.player.OneSDK",
+                "name": "com.aol.mobile.publicapi.player.OneSDK",
                 "fields": [],
                 "methods": [
                   {
@@ -39,7 +39,7 @@ class DescriptorsDeserializerTest {
                       {
                         "modifiers": [],
                         "name": "sdkConfig",
-                        "type": "com.aol.mobile.sdk.player.http.model.SdkConfig"
+                        "type": "com.aol.mobile.publicapi.player.http.model.SdkConfig"
                       }
                     ]
                   },
@@ -53,7 +53,7 @@ class DescriptorsDeserializerTest {
                       {
                         "modifiers": [],
                         "name": "plugin",
-                        "type": "com.aol.mobile.sdk.player.Plugin"
+                        "type": "com.aol.mobile.publicapi.player.Plugin"
                       }
                     ]
                   },
@@ -67,7 +67,7 @@ class DescriptorsDeserializerTest {
                       {
                         "modifiers": [],
                         "name": "plugin",
-                        "type": "com.aol.mobile.sdk.player.Plugin"
+                        "type": "com.aol.mobile.publicapi.player.Plugin"
                       }
                     ]
                   },
@@ -76,7 +76,7 @@ class DescriptorsDeserializerTest {
                       "public"
                     ],
                     "name": "getVideoProvider",
-                    "returnType": "com.aol.mobile.sdk.player.VideoProvider",
+                    "returnType": "com.aol.mobile.publicapi.player.VideoProvider",
                     "params": []
                   },
                   {
@@ -84,7 +84,7 @@ class DescriptorsDeserializerTest {
                       "public"
                     ],
                     "name": "createBuilder",
-                    "returnType": "com.aol.mobile.sdk.player.PlayerBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.PlayerBuilder",
                     "params": []
                   }
                 ]
@@ -94,7 +94,7 @@ class DescriptorsDeserializerTest {
                   "public",
                   "final"
                 ],
-                "name": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                "name": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                 "fields": [],
                 "methods": [
                   {
@@ -116,12 +116,12 @@ class DescriptorsDeserializerTest {
                       "public"
                     ],
                     "name": "setEnvironment",
-                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                     "params": [
                       {
                         "modifiers": [],
                         "name": "environment",
-                        "type": "com.aol.mobile.sdk.player.http.model.Environment"
+                        "type": "com.aol.mobile.publicapi.player.http.model.Environment"
                       }
                     ]
                   },
@@ -130,7 +130,7 @@ class DescriptorsDeserializerTest {
                       "public"
                     ],
                     "name": "setExtra",
-                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                     "params": [
                       {
                         "modifiers": [],
@@ -144,7 +144,7 @@ class DescriptorsDeserializerTest {
                       "public"
                     ],
                     "name": "setAdvertisingId",
-                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                     "params": [
                       {
                         "modifiers": [],
@@ -158,7 +158,7 @@ class DescriptorsDeserializerTest {
                       "public"
                     ],
                     "name": "setLimitAdTracking",
-                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                     "params": [
                       {
                         "modifiers": [],
@@ -172,7 +172,7 @@ class DescriptorsDeserializerTest {
                       "public"
                     ],
                     "name": "setConfigUrl",
-                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                     "params": [
                       {
                         "modifiers": [],
@@ -193,7 +193,7 @@ class DescriptorsDeserializerTest {
                           "final"
                         ],
                         "name": "callback",
-                        "type": "com.aol.mobile.sdk.player.OneSDKBuilder.Callback"
+                        "type": "com.aol.mobile.publicapi.player.OneSDKBuilder.Callback"
                       }
                     ]
                   }
@@ -205,7 +205,7 @@ class DescriptorsDeserializerTest {
                   "abstract",
                   "static"
                 ],
-                "name": "com.aol.mobile.sdk.player.OneSDKBuilder.Callback",
+                "name": "com.aol.mobile.publicapi.player.OneSDKBuilder.Callback",
                 "fields": [],
                 "methods": [
                   {
@@ -219,7 +219,7 @@ class DescriptorsDeserializerTest {
                       {
                         "modifiers": [],
                         "name": "oneSDK",
-                        "type": "com.aol.mobile.sdk.player.OneSDK"
+                        "type": "com.aol.mobile.publicapi.player.OneSDK"
                       }
                     ]
                   },
@@ -245,7 +245,7 @@ class DescriptorsDeserializerTest {
 
         val typeDescriptors: List<TypeDescriptor> = json.asTypeDescriptorList()
         assertThat(typeDescriptors.size).isEqualTo(3)
-        assertThat(typeDescriptors[0].name).isEqualTo("com.aol.mobile.sdk.player.OneSDK")
+        assertThat(typeDescriptors[0].name).isEqualTo("com.aol.mobile.publicapi.player.OneSDK")
         val firstMethodDescriptor: MethodDescriptor = typeDescriptors[0].methods.iterator().next()
         assertThat(firstMethodDescriptor.name).isEqualTo("constructor")
         assertThat(firstMethodDescriptor.params.size).isEqualTo(2)

@@ -1,9 +1,4 @@
-/*
- * Copyright 2018, Oath Inc.
- * Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms.
- */
-
-package com.aol.mobile.sdk.apitracker.dto
+package com.verizonmedia.mobile.publicapi.publicapiplugin.dto
 
 sealed class ClassRecord(val ordinal: Int) {
     class Removed(val modifiers: List<Modifier.Removed>, val name: String) : ClassRecord(2)

@@ -1,6 +1,7 @@
 <component name="CopyrightManager">
-  <copyright>
-    <option name="notice" value="Copyright &amp;#36;today.year, Oath Inc.&#10;Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms." />
-    <option name="myName" value="MIT" />
-  </copyright>
+    <copyright>
+        <option name="notice"
+            value="Copyright &amp;#36;today.year, Oath Inc.&#10;Licensed under the terms of the MIT License. See LICENSE.md file in project root for terms." />
+        <option name="myName" value="MIT" />
+    </copyright>
 </component>

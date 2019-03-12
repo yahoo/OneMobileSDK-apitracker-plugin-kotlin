@@ -21,15 +21,15 @@ class ProguardGeneratorTest {
     @Before
     fun before() {
         expectedProguard = """
-            -keep public class com.aol.mobile.sdk.player.OneSDK {
+            -keep public class com.aol.mobile.publicapi.player.OneSDK {
                 public protected *;
             }
 
-            -keep public class com.aol.mobile.sdk.player.OneSDKBuilder {
+            -keep public class com.aol.mobile.publicapi.player.OneSDKBuilder {
                 public protected *;
             }
 
-            -keep public class com.aol.mobile.sdk.player.OneSDKBuilder.Callback {
+            -keep public class com.aol.mobile.publicapi.player.OneSDKBuilder.Callback {
                 public protected *;
             }
 
@@ -42,7 +42,7 @@ class ProguardGeneratorTest {
                   "public",
                   "final"
                 ],
-                "name": "com.aol.mobile.sdk.player.OneSDK",
+                "name": "com.aol.mobile.publicapi.player.OneSDK",
                 "fields": [],
                 "methods": [
                   {
@@ -60,7 +60,7 @@ class ProguardGeneratorTest {
                       {
                         "modifiers": [],
                         "name": "sdkConfig",
-                        "type": "com.aol.mobile.sdk.player.http.model.SdkConfig"
+                        "type": "com.aol.mobile.publicapi.player.http.model.SdkConfig"
                       }
                     ]
                   },
@@ -74,7 +74,7 @@ class ProguardGeneratorTest {
                       {
                         "modifiers": [],
                         "name": "plugin",
-                        "type": "com.aol.mobile.sdk.player.Plugin"
+                        "type": "com.aol.mobile.publicapi.player.Plugin"
                       }
                     ]
                   },
@@ -88,7 +88,7 @@ class ProguardGeneratorTest {
                       {
                         "modifiers": [],
                         "name": "plugin",
-                        "type": "com.aol.mobile.sdk.player.Plugin"
+                        "type": "com.aol.mobile.publicapi.player.Plugin"
                       }
                     ]
                   },
@@ -97,7 +97,7 @@ class ProguardGeneratorTest {
                       "public"
                     ],
                     "name": "getVideoProvider",
-                    "returnType": "com.aol.mobile.sdk.player.VideoProvider",
+                    "returnType": "com.aol.mobile.publicapi.player.VideoProvider",
                     "params": []
                   },
                   {
@@ -105,7 +105,7 @@ class ProguardGeneratorTest {
                       "public"
                     ],
                     "name": "createBuilder",
-                    "returnType": "com.aol.mobile.sdk.player.PlayerBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.PlayerBuilder",
                     "params": []
                   }
                 ]
@@ -115,7 +115,7 @@ class ProguardGeneratorTest {
                   "public",
                   "final"
                 ],
-                "name": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                "name": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                 "fields": [],
                 "methods": [
                   {
@@ -137,12 +137,12 @@ class ProguardGeneratorTest {
                       "public"
                     ],
                     "name": "setEnvironment",
-                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                     "params": [
                       {
                         "modifiers": [],
                         "name": "environment",
-                        "type": "com.aol.mobile.sdk.player.http.model.Environment"
+                        "type": "com.aol.mobile.publicapi.player.http.model.Environment"
                       }
                     ]
                   },
@@ -151,7 +151,7 @@ class ProguardGeneratorTest {
                       "public"
                     ],
                     "name": "setExtra",
-                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                     "params": [
                       {
                         "modifiers": [],
@@ -165,7 +165,7 @@ class ProguardGeneratorTest {
                       "public"
                     ],
                     "name": "setAdvertisingId",
-                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                     "params": [
                       {
                         "modifiers": [],
@@ -179,7 +179,7 @@ class ProguardGeneratorTest {
                       "public"
                     ],
                     "name": "setLimitAdTracking",
-                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                     "params": [
                       {
                         "modifiers": [],
@@ -193,7 +193,7 @@ class ProguardGeneratorTest {
                       "public"
                     ],
                     "name": "setConfigUrl",
-                    "returnType": "com.aol.mobile.sdk.player.OneSDKBuilder",
+                    "returnType": "com.aol.mobile.publicapi.player.OneSDKBuilder",
                     "params": [
                       {
                         "modifiers": [],
@@ -214,7 +214,7 @@ class ProguardGeneratorTest {
                           "final"
                         ],
                         "name": "callback",
-                        "type": "com.aol.mobile.sdk.player.OneSDKBuilder.Callback"
+                        "type": "com.aol.mobile.publicapi.player.OneSDKBuilder.Callback"
                       }
                     ]
                   }
@@ -226,7 +226,7 @@ class ProguardGeneratorTest {
                   "abstract",
                   "static"
                 ],
-                "name": "com.aol.mobile.sdk.player.OneSDKBuilder.Callback",
+                "name": "com.aol.mobile.publicapi.player.OneSDKBuilder.Callback",
                 "fields": [],
                 "methods": [
                   {
@@ -240,7 +240,7 @@ class ProguardGeneratorTest {
                       {
                         "modifiers": [],
                         "name": "oneSDK",
-                        "type": "com.aol.mobile.sdk.player.OneSDK"
+                        "type": "com.aol.mobile.publicapi.player.OneSDK"
                       }
                     ]
                   },
