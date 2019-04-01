@@ -55,15 +55,10 @@ open class ApiCheckTask : DefaultTask() {
                 return@outOfDate
             }
 
-            val noChangesDirString = "${project.publicApi.changesDir.get()}/${project.publicApi.artifactId.get()}/noChanges/"
-
-            if (oldManifest.isEmpty()) {
-                project.mkdir(noChangesDirString)
-            } else {
+            if (oldManifest.isNotEmpty()) {
                 val changeReport = ChangeAggregator.process(oldManifest, newManifest)
                 project.file(changeReportFile)
                 changeReportFile.writeText(Markdown.render(implicitNamespaces.get(), changeReport))
-                project.delete(noChangesDirString)
             }
         }
 
