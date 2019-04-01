@@ -1,9 +1,10 @@
 package com.verizonmedia.mobile.publicapi.publicapiplugin.tasks
 
-import com.verizonmedia.mobile.publicapi.publicapiplugin.dto.TypeDescriptor
+import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.PUBLIC_API_FILENAME
 import com.verizonmedia.mobile.publicapi.publicapiplugin.dto.asTypeDescriptorList
 import com.verizonmedia.mobile.publicapi.publicapiplugin.utils.ChangeAggregator
 import com.verizonmedia.mobile.publicapi.publicapiplugin.utils.Markdown
+import com.verizonmedia.mobile.publicapi.publicapiplugin.utils.publicApi
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Input
@@ -13,71 +14,62 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import java.io.File
 import java.io.IOException
-import java.net.URL
 
 open class ApiCheckTask : DefaultTask() {
-    @InputFile
-    lateinit var oldManifestFile: File
+    @Input
+    lateinit var variantDirName: String
     @InputFile
     lateinit var newManifestFile: File
-    @Input
-    lateinit var oldManifestUrl: String
     @Input
     lateinit var implicitNamespaces: ListProperty<String>
     @OutputFile
     lateinit var changeReportFile: File
-    @OutputFile
-    lateinit var changeReportFileFromUrl: File
 
     @TaskAction
     fun comparePublicApi(inputs: IncrementalTaskInputs) {
         if (inputs.isIncremental) {
-            project.delete(changeReportFile, changeReportFileFromUrl)
+            project.delete(changeReportFile)
         }
 
         inputs.outOfDate {
-            val oldManifestFileString = oldManifestFile.readText()
+            val publicApi = project.publicApi
+            project.mkdir("${publicApi.changesDir.get()}/${publicApi.artifactId.get()}/$variantDirName")
+
+            val oldManifestFile = project.file("${publicApi.changesDir.get()}/${publicApi.artifactId.get()}/$variantDirName/$PUBLIC_API_FILENAME").apply { createNewFile() }
+            val oldManifestString = oldManifestFile.readText()
             val oldManifest = try {
-                if (oldManifestFileString.isNotEmpty()) {
-                    oldManifestFileString.asTypeDescriptorList()
+                if (oldManifestString.isNotEmpty()) {
+                    oldManifestString.asTypeDescriptorList()
                 } else {
-                    emptyList()
+                    return@outOfDate
                 }
             } catch (e: IOException) {
                 project.delete(changeReportFile)
-                emptyList<TypeDescriptor>()
-            }
-
-            val oldManifestFromUrl = try {
-                URL(oldManifestUrl).readText().asTypeDescriptorList()
-            } catch (e: Exception) {
-                project.delete(changeReportFileFromUrl)
-                emptyList<TypeDescriptor>()
+                return@outOfDate
             }
 
             val newManifest = try {
                 newManifestFile.readText().asTypeDescriptorList()
             } catch (e: IOException) {
-                project.delete(changeReportFile, changeReportFileFromUrl)
+                project.delete(changeReportFile)
                 return@outOfDate
             }
 
-            if (oldManifest.isNotEmpty()) {
+            val noChangesDirString = "${project.publicApi.changesDir.get()}/${project.publicApi.artifactId.get()}/noChanges/"
+
+            if (oldManifest.isEmpty()) {
+                project.mkdir(noChangesDirString)
+            } else {
                 val changeReport = ChangeAggregator.process(oldManifest, newManifest)
                 project.file(changeReportFile)
                 changeReportFile.writeText(Markdown.render(implicitNamespaces.get(), changeReport))
-            }
-
-            if (oldManifestFromUrl.isNotEmpty()) {
-                val changeReportFromUrl = ChangeAggregator.process(oldManifestFromUrl, newManifest)
-                project.file(changeReportFileFromUrl)
-                changeReportFileFromUrl.writeText(Markdown.render(implicitNamespaces.get(), changeReportFromUrl))
+                project.delete(noChangesDirString)
             }
         }
 
         inputs.removed {
-            if (changeReportFile.exists() && changeReportFileFromUrl.exists()) {
-                project.delete(changeReportFile, changeReportFileFromUrl)
+            if (changeReportFile.exists()) {
+                project.delete(changeReportFile)
             }
         }
     }
