@@ -13,7 +13,13 @@ open class PublicApiExtension(private val project: Project) {
 
     val apiTrimNamespaces: ListProperty<String> = project.objects.listProperty(String::class.java).apply { add("java.lang") }
 
-    val previousPublicApiUrl: Property<String> = project.objects.property(String::class.java).apply { set("") }
+    val changesDir: Property<File> = project.objects.property(File::class.java).apply { set(File(" ")) }
 
-    val previousPublicApiManifest: Property<File> = project.objects.property(File::class.java).apply { set(File(" ")) }
+    val githubRepo: Property<String> = project.objects.property(String::class.java)
+
+    val githubBranch: Property<String> = project.objects.property(String::class.java).apply { set("master") }
+
+    val groupId: Property<String> = project.objects.property(String::class.java)
+
+    val artifactId: Property<String> = project.objects.property(String::class.java)
 }

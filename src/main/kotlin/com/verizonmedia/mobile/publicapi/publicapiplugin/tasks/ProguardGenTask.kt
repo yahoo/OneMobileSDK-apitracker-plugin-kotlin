@@ -2,7 +2,9 @@ package com.verizonmedia.mobile.publicapi.publicapiplugin.tasks
 
 import com.verizonmedia.mobile.publicapi.publicapiplugin.dto.asTypeDescriptorList
 import com.verizonmedia.mobile.publicapi.publicapiplugin.utils.Proguard
+import com.verizonmedia.mobile.publicapi.publicapiplugin.utils.publicApi
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction

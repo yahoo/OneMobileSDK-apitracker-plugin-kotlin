@@ -3,26 +3,20 @@ package com.verizonmedia.mobile.publicapi.publicapiplugin
 import com.android.build.gradle.internal.dsl.AnnotationProcessorOptions
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.BUILD_PATH_KEY
 import com.aol.mobile.sdk.apicollector.PublicApiGrabber.Companion.PUBLIC_API_FILENAME
-import com.verizonmedia.mobile.publicapi.publicapiplugin.tasks.ApiCheckTask
-import com.verizonmedia.mobile.publicapi.publicapiplugin.tasks.ProguardGenTask
-import com.verizonmedia.mobile.publicapi.publicapiplugin.utils.android
-import com.verizonmedia.mobile.publicapi.publicapiplugin.utils.config
-import com.verizonmedia.mobile.publicapi.publicapiplugin.utils.publicApi
-import com.verizonmedia.mobile.publicapi.publicapiplugin.utils.task
+import com.verizonmedia.mobile.publicapi.publicapiplugin.tasks.*
+import com.verizonmedia.mobile.publicapi.publicapiplugin.utils.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
-import java.io.File
 
 class PublicApiPlugin : Plugin<Project> {
-    private lateinit var artifactDir: File
-
     override fun apply(project: Project) {
-        artifactDir = project.mkdir("${project.buildDir}/publicApiPlugin/")
-
         project.extensions.create("publicApi", PublicApiExtension::class.java, project)
 
         project.config {
+            plugins.apply {
+                apply("org.ajoberstar.git-publish")
+            }
             dependencies.apply {
                 add("kapt", "com.aol.one.publishers.android:api-collector:1.4")
                 add("compileOnly", "com.aol.one.publishers.android:annotations:1.4")
@@ -30,6 +24,10 @@ class PublicApiPlugin : Plugin<Project> {
         }
 
         generatePublicApiArtifacts(project)
+
+        project.afterEvaluate { evaluatedProject ->
+            configureGithubPublishing(evaluatedProject)
+        }
     }
 
     private fun generatePublicApiArtifacts(project: Project) {
@@ -41,30 +39,51 @@ class PublicApiPlugin : Plugin<Project> {
 
                     val manifest = file("${publicApi.publicApiManifestDir.get()}/$dirName/$PUBLIC_API_FILENAME")
 
-                    val genProguardTask = task("genApiProguard${name.capitalize()}", ProguardGenTask::class) {
+                    task("genPublicApiProguard${name.capitalize()}", ProguardGenTask::class) {
                         dependsOn(javaCompileProvider)
                         manifestFile = manifest
                         proguardFile = file("${publicApi.generatedProguardRulesDir.get()}/proguard-classes-${variant.name.toLowerCase()}.pro")
                     }
 
-                    val previousManifest = file("${publicApi.previousPublicApiManifest.get()}")
-                    val changesDir = "${rootProject.buildDir}/apiChanges"
-
-                    val checkApiTask = task("checkApiChanges${name.capitalize()}", ApiCheckTask::class) {
+                    task("checkPublicApiChanges${name.capitalize()}", ApiCheckTask::class) {
                         dependsOn(javaCompileProvider)
-                        oldManifestFile = if (previousManifest.exists()) previousManifest else File.createTempFile("    ", "")
-                        oldManifestUrl = publicApi.previousPublicApiUrl.get()
+                        variantDirName = dirName
                         newManifestFile = manifest
                         implicitNamespaces = publicApi.apiTrimNamespaces
-                        changeReportFile = file("$changesDir/changes.md")
-                        changeReportFileFromUrl = file("$changesDir/changesFromUrl.md")
+                        changeReportFile = file("${publicApi.changesDir.get()}/${publicApi.artifactId.get()}/$dirName/apiChanges.md")
+                    }
+
+                    task("manifestCopy${name.capitalize()}", CopyManifestTask::class) {
+                        dependsOn(javaCompileProvider)
+                        manifestFile = manifest
+                        copiedManifestFile = file("${publicApi.changesDir.get()}/${publicApi.artifactId.get()}/$dirName/$PUBLIC_API_FILENAME")
                     }
 
                     tasks.apply {
                         (getByName("bundle${variant.name.capitalize()}Aar") as AbstractArchiveTask).from(manifest)
-                        getByName("merge${variant.name.capitalize()}ConsumerProguardFiles").dependsOn(genProguardTask)
-                        getByName("assemble").dependsOn(checkApiTask)
+                        getByName("preBuild").dependsOn(getByName("gitPublishReset"))
+                        getByName("merge${variant.name.capitalize()}ConsumerProguardFiles").dependsOn(getByName("genPublicApiProguard${name.capitalize()}"))
+                        getByName("compile${name.capitalize()}Sources").dependsOn(getByName("checkPublicApiChanges${name.capitalize()}"))
+                        getByName("assemble${name.capitalize()}").dependsOn(getByName("manifestCopy${name.capitalize()}"))
+                        getByName("gitPublishCommit").dependsOn(getByName("assemble"))
+                        getByName("lint").dependsOn(getByName("gitPublishPush"))
                     }
+                }
+            }
+        }
+    }
+
+    private fun configureGithubPublishing(project: Project) {
+        project.config {
+            gitPublish.apply {
+                repoUri = "https://github.com/${publicApi.githubRepo.get()}.git"
+                branch = publicApi.githubBranch.get()
+                repoDir = publicApi.changesDir.get()
+
+                preserve { it.includes.add("**/*") }
+
+                with(publicApi) {
+                    commitMessage = "Artifact ${groupId.get()}:${artifactId.get()}"
                 }
             }
         }
