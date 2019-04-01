@@ -12,8 +12,6 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import java.io.File
 
 open class ProguardGenTask : DefaultTask() {
-    @Input
-    lateinit var variantDirName: String
     @InputFile
     lateinit var manifestFile: File
     @OutputFile

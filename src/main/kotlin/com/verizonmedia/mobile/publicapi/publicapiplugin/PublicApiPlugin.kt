@@ -41,7 +41,6 @@ class PublicApiPlugin : Plugin<Project> {
 
                     task("genPublicApiProguard${name.capitalize()}", ProguardGenTask::class) {
                         dependsOn(javaCompileProvider)
-                        variantDirName = dirName
                         manifestFile = manifest
                         proguardFile = file("${publicApi.generatedProguardRulesDir.get()}/proguard-classes-${variant.name.toLowerCase()}.pro")
                     }
